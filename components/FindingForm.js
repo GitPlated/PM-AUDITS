@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState, useTransition } from 'react'
-import { logFinding } from './actions'
+import { logFinding } from '../lib/actions'
 
 export function FindingForm({ technicians, defaultTechnician }) {
   const formRef = useRef(null)

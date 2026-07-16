@@ -1,8 +1,8 @@
 'use client'
 
 import { useRef, useState, useTransition } from 'react'
-import { logAction } from './actions'
-import { DISCIPLINE_STEPS } from '../../lib/compliance'
+import { logAction } from '../lib/actions'
+import { DISCIPLINE_STEPS } from '../lib/compliance'
 
 export function ActionForm({ technicianName, findingId, onDone }) {
   const formRef = useRef(null)

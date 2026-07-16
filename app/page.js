@@ -1,5 +1,9 @@
 import Link from 'next/link'
-import { LEADERS, getSummary } from '../lib/roster'
+import { LEADERS, getSummary, leaderSlug } from '../lib/roster'
+import { loadComplianceData, unactionedFindings } from '../lib/complianceData'
+import { NotifyBadge } from '../components/NotifyBadge'
+
+export const dynamic = 'force-dynamic'
 
 function accentStyle(color) {
   return {
@@ -9,22 +13,18 @@ function accentStyle(color) {
   }
 }
 
-export default function Page() {
+export default async function Page() {
   const summary = getSummary(LEADERS)
+  const { findings, actions, connected } = await loadComplianceData()
+  const openFindings = unactionedFindings(findings, actions)
 
   return (
     <div className="wrap">
-      <nav className="subnav">
-        <Link href="/compliance">PM compliance tracker →</Link>
-      </nav>
-
       <header className="top">
         <div className="title-block">
-          <p className="eyebrow">IL01 — Aurora, IL &nbsp;·&nbsp; Disciplinary Action Accountability</p>
-          <h1>Who owns the write-up</h1>
-          <p className="sub">
-            Every technician mapped to the leader accountable for their disciplinary action, by shift and role.
-          </p>
+          <p className="eyebrow">IL01 — Aurora, IL &nbsp;·&nbsp; Disciplinary Accountability</p>
+          <h1>Who owns what</h1>
+          <p className="sub">Pick a leader to see their team and take action, or check trends across everyone.</p>
         </div>
         <div className="stat-row">
           <div className="stat">
@@ -41,29 +41,28 @@ export default function Page() {
             </div>
             <div className="lbl">Open positions</div>
           </div>
+          <div className="stat">
+            <div className="num mono" style={openFindings.length > 0 ? { color: 'var(--alert)' } : undefined}>
+              {openFindings.length}
+            </div>
+            <div className="lbl">Findings awaiting action</div>
+          </div>
         </div>
       </header>
 
-      <div className="legend">
-        <span className="grp">
-          <b>FH</b> Front Half
-        </span>
-        <span className="grp">
-          <b>BH</b> Back Half
-        </span>
-        <span className="grp">
-          <b>D</b> Days
-        </span>
-        <span className="grp">
-          <b>S</b> Swing / Mids
-        </span>
-        <span className="grp">
-          <b>N</b> Nights
-        </span>
-        <span className="grp">
-          e.g. <b>FHD</b> = Front Half, Days
-        </span>
-      </div>
+      {!connected && (
+        <div className="notice-panel notice-warn">
+          <span className="mark">!</span>
+          <div>
+            <h3>Supabase isn&rsquo;t connected yet</h3>
+            <p>
+              Findings and discipline actions won&rsquo;t save or load until <code>NEXT_PUBLIC_SUPABASE_URL</code>{' '}
+              and <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code> are set (see <code>.env.example</code>) and{' '}
+              <code>supabase/schema.sql</code> has been run against that project.
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="grid">
         {LEADERS.map((leader) => {
@@ -71,8 +70,15 @@ export default function Page() {
             (n, shift) => n + shift.techs.filter((t) => !t.vacant).length,
             0
           )
+          const leaderOpenCount = openFindings.filter((f) => f.leader_name === leader.name).length
           return (
-            <div className="card" style={accentStyle(leader.color)} key={leader.name}>
+            <Link
+              href={`/leaders/${leaderSlug(leader.name)}`}
+              className="card leader-card-link"
+              style={accentStyle(leader.color)}
+              key={leader.name}
+            >
+              <NotifyBadge count={leaderOpenCount} />
               <div className="stripe" />
               <div className="head">
                 <p className="role">Responsible leader</p>
@@ -90,44 +96,24 @@ export default function Page() {
                   </span>
                 </div>
               </div>
-              <div className="roster">
-                {leader.shifts.map((shift) => (
-                  <div className="shift-block" key={shift.code}>
-                    <div className="shift-title">
-                      {shift.code} — {shift.label} ({shift.techs.filter((t) => !t.vacant).length})
-                    </div>
-                    <ul className="techs">
-                      {shift.techs.map((tech, i) => (
-                        <li className={tech.vacant ? 'vacant' : ''} key={tech.name ?? `${shift.code}-vacant-${i}`}>
-                          <span className="name">{tech.vacant ? 'Open position' : tech.name}</span>
-                          <span className="role-tag">{tech.role}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+              <div className="card-footer">
+                <span className="card-cta">View team →</span>
               </div>
-            </div>
+            </Link>
           )
         })}
       </div>
 
-      {summary.vacant > 0 && (
-        <div className="notice-panel">
-          <span className="mark">i</span>
-          <div>
-            <h3>
-              {summary.vacant} open position{summary.vacant === 1 ? '' : 's'}
-            </h3>
-            <p>
-              {summary.vacancies
-                .map((v) => `${v.shiftLabel} has an unfilled ${v.role} slot`)
-                .join(', ')}
-              .
-            </p>
-          </div>
-        </div>
-      )}
+      <div className="grid action-grid">
+        <Link href="/trends" className="tile">
+          <h3>Trends</h3>
+          <p>See findings and discipline activity across every leader.</p>
+        </Link>
+        <Link href="/submit" className="tile">
+          <h3>Submit a finding</h3>
+          <p>Log a PM compliance finding for any technician — it lands in the right leader&rsquo;s queue.</p>
+        </Link>
+      </div>
 
       <footer className="note">
         Source: Users for HelloFresh – all.csv (IL01 – Aurora, IL), reconciled against current shift rosters. Leader
