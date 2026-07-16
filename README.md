@@ -34,6 +34,26 @@ hand-edited when the roster changes — only `LEADERS` does.
 3. Replace the static `LEADERS` import in `app/page.js` with a query through
    `lib/supabaseClient.js`.
 
+## PM compliance tracker (`/compliance`)
+
+Tracks PM compliance findings (e.g. a technician closing a PM out of compliance) and walks
+them through the four-step disciplinary ladder: Documented Coaching → Written Warning →
+Final Written Warning → Termination.
+
+- `lib/compliance.js` — the step ladder (with links to the Google Doc / Form for each step,
+  and the 6-month expiry rule for warnings), plus the logic that resolves a technician's
+  current standing from their action history.
+- `supabase/schema.sql` — creates the `pm_findings` and `discipline_actions` tables this page
+  reads/writes. Run it once in the Supabase SQL Editor after creating the project (see
+  above); until then the page still renders (steps, forms, reference links) but saving is
+  disabled and says so.
+- `app/compliance/actions.js` — Server Actions that insert findings/actions and revalidate
+  the page. No auth exists yet, so `supabase/schema.sql`'s RLS policies allow any anon-key
+  request to read/write — tighten this once leaders log in individually.
+- **Outstanding**: the handbook table for which safety/policy violations justify skipping
+  discipline steps hasn't been added yet — the page has a clearly marked placeholder in the
+  "Skipping steps for egregious violations" section until that content is provided.
+
 ## Deploying
 
 Push to `main` — connect this repo to a Vercel project (Framework Preset: Next.js) and it

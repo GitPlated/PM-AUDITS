@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { LEADERS, getSummary } from '../lib/roster'
 
 function accentStyle(color) {
@@ -13,6 +14,10 @@ export default function Page() {
 
   return (
     <div className="wrap">
+      <nav className="subnav">
+        <Link href="/compliance">PM compliance tracker →</Link>
+      </nav>
+
       <header className="top">
         <div className="title-block">
           <p className="eyebrow">IL01 — Aurora, IL &nbsp;·&nbsp; Disciplinary Action Accountability</p>
