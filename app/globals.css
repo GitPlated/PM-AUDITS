@@ -1,0 +1,336 @@
+:root {
+  --bg: #f2f4f3;
+  --bg-raised: #ffffff;
+  --ink: #1b2226;
+  --ink-soft: #4b5559;
+  --ink-faint: #7b8488;
+  --border: #dde2e0;
+  --border-soft: #e8ebe9;
+
+  --amber: #a3701f;
+  --amber-bg: #f7ecd9;
+  --amber-line: #d9b877;
+
+  --teal: #276b63;
+  --teal-bg: #dfeeeb;
+  --teal-line: #8fbdb5;
+
+  --indigo: #47599e;
+  --indigo-bg: #e3e6f5;
+  --indigo-line: #a7b1de;
+
+  --plum: #83426a;
+  --plum-bg: #f2e2ec;
+  --plum-line: #cf9fbe;
+
+  --info: #3a6a8a;
+  --info-bg: #e2eef4;
+  --info-line: #a4c7d8;
+
+  --focus: #2f5d92;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14181a;
+    --bg-raised: #1b2124;
+    --ink: #e9ecec;
+    --ink-soft: #b4bcbe;
+    --ink-faint: #82898c;
+    --border: #2c3437;
+    --border-soft: #232a2d;
+
+    --amber: #e0b360;
+    --amber-bg: #332a17;
+    --amber-line: #5c4a24;
+
+    --teal: #7fc7bc;
+    --teal-bg: #17302c;
+    --teal-line: #275249;
+
+    --indigo: #a9b4e6;
+    --indigo-bg: #232a4a;
+    --indigo-line: #3a4576;
+
+    --plum: #e0a8ca;
+    --plum-bg: #362232;
+    --plum-line: #5c3a51;
+
+    --info: #8fc4e0;
+    --info-bg: #1c2e38;
+    --info-line: #345166;
+
+    --focus: #7fb0e8;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Segoe UI', ui-sans-serif, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.45;
+}
+
+.mono {
+  font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+header.top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+.title-block .eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-faint);
+  margin: 0 0 0.35rem;
+}
+.title-block h1 {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.title-block .sub {
+  margin: 0.3rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.stat-row {
+  display: flex;
+  gap: 1.5rem;
+}
+.stat {
+  text-align: right;
+}
+.stat .num {
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.stat .lbl {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin-top: 0.25rem;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  padding: 0.85rem 1.1rem;
+  margin-bottom: 2rem;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+.legend b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.legend .grp {
+  white-space: nowrap;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.1rem;
+}
+
+.card {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.card .stripe {
+  height: 5px;
+  background: var(--accent);
+}
+.card .head {
+  padding: 1.1rem 1.25rem 0.9rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+.card .head .role {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  margin: 0 0 0.2rem;
+  color: var(--accent);
+}
+.card .head h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+.card .head .meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.6rem;
+}
+.badges {
+  display: flex;
+  gap: 0.4rem;
+}
+.badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+.count {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+.count .n {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.roster {
+  padding: 0.4rem 0.6rem 0.7rem;
+  flex: 1;
+}
+.shift-block {
+  padding: 0.5rem 0.65rem 0.2rem;
+}
+.shift-block .shift-title {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--ink-faint);
+  margin-bottom: 0.35rem;
+}
+ul.techs {
+  list-style: none;
+  margin: 0 0 0.6rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+ul.techs li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 7px;
+  font-size: 0.9rem;
+}
+ul.techs li:hover {
+  background: var(--border-soft);
+}
+ul.techs li .name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+ul.techs li .role-tag {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  background: var(--border-soft);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.12rem 0.42rem;
+}
+ul.techs li.vacant .name {
+  font-style: italic;
+  color: var(--ink-faint);
+}
+ul.techs li.vacant {
+  border: 1px dashed var(--border);
+}
+
+.notice-panel {
+  margin-top: 1.6rem;
+  background: var(--info-bg);
+  border: 1px solid var(--info-line);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+.notice-panel .mark {
+  font-weight: 800;
+  color: var(--info);
+  font-size: 1.1rem;
+  line-height: 1.3;
+}
+.notice-panel h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+  color: var(--info);
+}
+.notice-panel p {
+  margin: 0;
+  font-size: 0.87rem;
+  color: var(--ink-soft);
+}
+
+footer.note {
+  margin-top: 2rem;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+a,
+button {
+  font: inherit;
+}
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  header.top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .stat-row {
+    gap: 1rem;
+  }
+  .stat {
+    text-align: left;
+  }
+}
