@@ -50,9 +50,9 @@ Final Written Warning → Termination.
 - `app/compliance/actions.js` — Server Actions that insert findings/actions and revalidate
   the page. No auth exists yet, so `supabase/schema.sql`'s RLS policies allow any anon-key
   request to read/write — tighten this once leaders log in individually.
-- **Outstanding**: the handbook table for which safety/policy violations justify skipping
-  discipline steps hasn't been added yet — the page has a clearly marked placeholder in the
-  "Skipping steps for egregious violations" section until that content is provided.
+- The handbook's occurrence-count table (which occurrence of a violation type lands on which
+  step, e.g. Time Theft skips straight to termination) lives in `VIOLATION_TABLE` in
+  `lib/compliance.js` and renders on the page as a real table.
 
 ## Deploying
 

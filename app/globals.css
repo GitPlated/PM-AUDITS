@@ -476,6 +476,45 @@ button {
 .callout-pending h3 {
   color: var(--info);
 }
+
+.table-scroll {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.ref-table th,
+.ref-table td {
+  border: 1px solid var(--border);
+  padding: 0.6rem 0.85rem;
+  text-align: left;
+}
+.ref-table thead th {
+  background: var(--ink);
+  color: var(--bg-raised);
+  font-weight: 700;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.ref-table tbody th {
+  font-weight: 600;
+  background: var(--bg);
+  white-space: nowrap;
+}
+.ref-table td.na {
+  background: var(--border-soft);
+}
+.table-footnote {
+  margin: 0.6rem 0 0;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
 .notice-warn {
   background: var(--info-bg);
   border-color: var(--info-line);

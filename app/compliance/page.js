@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { supabase } from '../../lib/supabaseClient'
-import { DISCIPLINE_STEPS, WORDING_GUIDE_URL, allTechnicians } from '../../lib/compliance'
+import { DISCIPLINE_STEPS, VIOLATION_TABLE, WORDING_GUIDE_URL, allTechnicians } from '../../lib/compliance'
 import { ComplianceExplorer } from './ComplianceExplorer'
 
 export const metadata = {
@@ -87,17 +87,34 @@ export default async function CompliancePage() {
           Safety or workplace-policy violations serious enough can skip levels of the ladder above. Use the
           table below (from the handbook) to decide the correct starting step.
         </p>
-        <div className="callout callout-pending">
-          <span className="mark">⚠</span>
-          <div>
-            <h3>Table pending</h3>
-            <p>
-              The handbook table referenced for skip-level violations didn&rsquo;t come through as text or an
-              image in our chat — send it over (paste the rows, or attach the image) and it&rsquo;ll go here
-              verbatim so leaders can reference it in place.
-            </p>
-          </div>
+        <div className="table-scroll">
+          <table className="ref-table">
+            <thead>
+              <tr>
+                <th>Behavior Violation Type</th>
+                {VIOLATION_TABLE.columns.map((col) => (
+                  <th key={col}>{col}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {VIOLATION_TABLE.rows.map((row) => (
+                <tr key={row.type}>
+                  <th scope="row">{row.type}</th>
+                  {row.cells.map((cell, i) => (
+                    <td key={i} className={cell ? '' : 'na'}>
+                      {cell ?? ''}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+        <p className="table-footnote">
+          Blank cells mean that step is skipped for that violation type — e.g. Time Theft goes straight to
+          termination on the first occurrence.
+        </p>
       </section>
 
       <section className="panel">
