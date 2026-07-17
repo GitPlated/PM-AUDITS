@@ -117,11 +117,6 @@ export default async function Page() {
           </div>
         </Link>
       </div>
-
-      <footer className="note">
-        Source: Users for HelloFresh – all.csv (IL01 – Aurora, IL), reconciled against current shift rosters. Leader
-        assignments: Tyler Christensen (FHD, FHS), Dave Haney (BHD, BHS), Ron Vogel (FHN), Wilberth Carrizal (BHN).
-      </footer>
     </div>
   )
 }
