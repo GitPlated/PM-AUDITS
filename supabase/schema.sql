@@ -57,3 +57,10 @@ create policy "public insert actions" on discipline_actions for insert with chec
 -- Added later: photo of the completed Documented Coaching form, uploaded to
 -- the 'coaching-forms' storage bucket (see supabase/storage.sql).
 alter table discipline_actions add column if not exists coaching_photo_url text;
+
+-- Added later: delete policies (only select/insert existed before). Needed
+-- for admin cleanup / resets. Still wide open, matching the no-auth stance.
+drop policy if exists "public delete findings" on pm_findings;
+create policy "public delete findings" on pm_findings for delete using (true);
+drop policy if exists "public delete actions" on discipline_actions;
+create policy "public delete actions" on discipline_actions for delete using (true);
