@@ -7,7 +7,7 @@ import { StepTrack } from './StepTrack'
 import { Timeline } from './Timeline'
 import { ActionForm } from './ActionForm'
 
-function QueueItem({ finding }) {
+function QueueItem({ finding, leaderName }) {
   const [open, setOpen] = useState(false)
   return (
     <li className="queue-item">
@@ -29,8 +29,8 @@ function QueueItem({ finding }) {
             </p>
           )}
           <details className="log-action">
-            <summary>Log a discipline action for {finding.technician_name}</summary>
-            <ActionForm technicianName={finding.technician_name} findingId={finding.id} />
+            <summary>Log disciplinary action for {finding.technician_name}</summary>
+            <ActionForm technicianName={finding.technician_name} findingId={finding.id} leaderName={leaderName} />
           </details>
         </div>
       )}
@@ -38,7 +38,7 @@ function QueueItem({ finding }) {
   )
 }
 
-function TechRow({ tech, findings, actions }) {
+function TechRow({ tech, findings, actions, leaderName }) {
   const [open, setOpen] = useState(false)
   const current = currentStepFor(tech.name, actions)
   const techFindings = findings.filter((f) => f.technician_name === tech.name)
@@ -58,8 +58,8 @@ function TechRow({ tech, findings, actions }) {
           <StepTrack actions={techActions} />
           <Timeline findings={techFindings} actions={techActions} />
           <details className="log-action">
-            <summary>Log a discipline action for {tech.name}</summary>
-            <ActionForm technicianName={tech.name} />
+            <summary>Log disciplinary action for {tech.name}</summary>
+            <ActionForm technicianName={tech.name} leaderName={leaderName} />
           </details>
         </div>
       )}
@@ -84,7 +84,7 @@ export function TeamSection({ leader, findings, actions }) {
         ) : (
           <ul className="queue">
             {openFindings.map((f) => (
-              <QueueItem key={f.id} finding={f} />
+              <QueueItem key={f.id} finding={f} leaderName={leader.name} />
             ))}
           </ul>
         )}
@@ -107,7 +107,7 @@ export function TeamSection({ leader, findings, actions }) {
                   </div>
                 </li>
               ) : (
-                <TechRow key={tech.name} tech={tech} findings={findings} actions={actions} />
+                <TechRow key={tech.name} tech={tech} findings={findings} actions={actions} leaderName={leader.name} />
               )
             )}
           </ul>

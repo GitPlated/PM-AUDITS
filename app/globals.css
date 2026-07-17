@@ -577,6 +577,13 @@ button {
 .compliance-form textarea {
   resize: vertical;
 }
+.compliance-form input:disabled,
+.compliance-form select:disabled,
+.compliance-form textarea:disabled {
+  opacity: 0.5;
+  background: var(--border-soft);
+  cursor: not-allowed;
+}
 .checkbox-label {
   flex-direction: row !important;
   align-items: center;
@@ -599,6 +606,112 @@ button {
   font-size: 0.8rem;
   color: var(--ink-soft);
   margin: 0;
+}
+
+.field-note {
+  font-weight: 400;
+  color: var(--ink-faint);
+  text-transform: none;
+  letter-spacing: normal;
+}
+.word-count {
+  align-self: flex-end;
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+}
+.word-count-low {
+  color: var(--alert);
+  font-weight: 600;
+}
+
+.signature-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  justify-content: center;
+}
+.signature-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.signature-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.doc-required-panel {
+  background: var(--amber-bg);
+  border: 1px solid var(--amber-line);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.doc-required-note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+.doc-required-note strong {
+  color: var(--amber);
+}
+.doc-required-note a {
+  color: var(--amber);
+  font-weight: 600;
+}
+.doc-upload-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.doc-upload-label input[type='file'] {
+  font-size: 0.82rem;
+  color: var(--ink);
+}
+
+.coaching-uploads {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+.coaching-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.coaching-upload a {
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  aspect-ratio: 4 / 3;
+}
+.coaching-upload img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.coaching-upload-meta {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+}
+.coaching-upload-name {
+  font-weight: 600;
+  color: var(--ink);
+}
+.coaching-upload-sub {
+  color: var(--ink-faint);
 }
 
 .empty-note {

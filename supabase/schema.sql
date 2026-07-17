@@ -49,3 +49,7 @@ create policy "public insert findings" on pm_findings for insert with check (tru
 
 create policy "public read actions" on discipline_actions for select using (true);
 create policy "public insert actions" on discipline_actions for insert with check (true);
+
+-- Added later: photo of the completed Documented Coaching form, uploaded to
+-- the 'coaching-forms' storage bucket (see supabase/storage.sql).
+alter table discipline_actions add column if not exists coaching_photo_url text;

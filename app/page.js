@@ -105,13 +105,9 @@ export default async function Page() {
       </div>
 
       <div className="grid action-grid">
-        <Link href="/trends" className="tile">
-          <h3>Trends</h3>
-          <p>See findings and discipline activity across every leader.</p>
-        </Link>
-        <Link href="/submit" className="tile">
-          <h3>Submit a finding</h3>
-          <p>Log a PM compliance finding for any technician — it lands in the right leader&rsquo;s queue.</p>
+        <Link href="/admin" className="tile">
+          <h3>Admin</h3>
+          <p>Trends across every leader, submit a finding for any technician, and documented coaching uploads.</p>
         </Link>
       </div>
 

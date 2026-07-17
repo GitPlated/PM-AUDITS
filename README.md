@@ -25,31 +25,55 @@ Then open http://localhost:3000.
 
 - **`/`** — landing page. One card per leader (name, shift badges, team size) with a glowing
   notification badge showing how many of their team's findings are still awaiting a
-  discipline action. Click a leader to open their page. Also links to Trends and Submit.
+  discipline action. Click a leader to open their page. Also links to Admin.
 - **`/leaders/[slug]`** — one leader's page:
   - A large **How to apply disciplinary action** button at the top opens `/guide` (see below).
   - **Team** — a "Needs action" panel (visually called out — tinted/bordered — whenever it's
     non-empty) for findings awaiting a discipline action, then the full roster grouped by
     shift. Click any technician to see their discipline steps laid out left-to-right in the
-    order they happened, their full finding/action history, and log a new action.
+    order they happened, their full finding/action history, and log a new action (see "Logging
+    a discipline action" below).
 - **`/guide`** — the four-step ladder as icon-led cards with connecting arrows, the handbook's
   skip-level table, and the wording guide, all in one graphically laid-out page. Optionally
   takes `?leader=<slug>` (set automatically from a leader's page) so the back link returns to
   that leader instead of the landing page. Content is identical regardless of which leader
   linked to it.
-- **`/trends`** — site-wide totals, each with a click-to-expand drill-down of the individual
-  entries:
-  - **Findings by leader** — counts every PM finding *plus* every discipline action logged for
-    that leader's team as one combined total (an action doesn't have to trace back to a
+- **`/admin`** — everything that isn't scoped to one leader:
+  - **Trends** — site-wide totals, each with a click-to-expand drill-down of the individual
+    entries. "Findings by leader" counts every PM finding *plus* every discipline action logged
+    for that leader's team as one combined total (an action doesn't have to trace back to a
     logged finding — e.g. a time-theft write-up skips straight to a step with no PM finding
-    behind it), with how many are still open.
-  - **Discipline actions by step** — how many actions have been logged at each step,
-    org-wide; expand a step to see who and when.
-- **`/submit`** — a standalone finding form for any technician; it's saved with that
-  technician's leader already attached, so it shows up in the right leader's queue.
+    behind it). "Discipline actions by step" shows how many actions have been logged at each
+    step, org-wide.
+  - **Submit a finding** — a standalone finding form for any technician; it's saved with that
+    technician's leader already attached, so it shows up in the right leader's queue.
+  - **Documented coaching uploads** — every photo of a completed Documented Coaching form,
+    uploaded from a leader's page (see below), most recent first.
 
-`/compliance` (the old single-page layout) redirects to `/` for anyone with the old link
-bookmarked.
+`/compliance`, `/trends`, and `/submit` redirect to `/` or `/admin` for anyone with an old
+link bookmarked.
+
+## Logging a discipline action
+
+The action form on a leader's page (`components/ActionForm.js`) walks through the process
+rather than just being a plain form:
+
+1. Every field is disabled except **Step** until a step is picked.
+2. Picking a step immediately shows what has to happen first, right next to the dropdown:
+   - **Documented Coaching** — print the Documented Coaching doc, have the conversation, then
+     upload a photo of the completed form. On a phone, the file input's `capture="environment"`
+     opens the camera directly instead of a file picker.
+   - **Written Warning / Final Written Warning / Termination** — a link to the Progressive
+     Discipline form, with instructions to fill it out and forward the email confirmation to
+     your manager / senior maintenance manager.
+3. The rest of the fields (date, skip reason, notes) unlock once a step is picked. **Notes**
+   is required with a live word counter and won't submit under 10 words
+   (`MIN_ACTION_NOTES_WORDS` in `lib/compliance.js`), checked both client- and server-side.
+4. **Signed by** is filled in automatically from whichever leader's page the form is on — it's
+   not a free-text field, so it can't be typed over.
+5. On submit, a coaching photo uploads to the `coaching-forms` Supabase Storage bucket (see
+   `supabase/storage.sql`) and its public URL is stored on the `discipline_actions` row, which
+   is what populates the Admin page's coaching-uploads section.
 
 ## Data
 
@@ -67,13 +91,17 @@ bookmarked.
   moment a leader logs a real discipline action against it, not just from being viewed.
 - `lib/actions.js` — Server Actions (`logFinding`, `logAction`) that insert into Supabase and
   revalidate the whole app so counts update everywhere immediately.
-- `supabase/schema.sql` — creates the `pm_findings` and `discipline_actions` tables. Run it
-  once in the Supabase SQL Editor. No auth exists yet, so its RLS policies allow any anon-key
-  request to read/write — tighten this once leaders log in individually.
+- `supabase/schema.sql` — creates the `pm_findings` and `discipline_actions` tables (including
+  `discipline_actions.coaching_photo_url`). Run it once in the Supabase SQL Editor. No auth
+  exists yet, so its RLS policies allow any anon-key request to read/write — tighten this once
+  leaders log in individually.
+- `supabase/storage.sql` — creates the public `coaching-forms` Storage bucket that coaching
+  photos upload to, with the same open-policy stance as the tables above.
 
 ## Adding/updating Supabase
 
-1. Create a Supabase project, run `supabase/schema.sql` in its SQL Editor.
+1. Create a Supabase project, run `supabase/schema.sql` and `supabase/storage.sql` in its SQL
+   Editor.
 2. Copy `.env.example` to `.env.local` and fill in the Project URL and anon/publishable key
    (Project Settings → API in Supabase).
 3. Add the same two env vars in the Vercel project settings (Production, Preview, and
