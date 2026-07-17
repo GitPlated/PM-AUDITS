@@ -73,14 +73,17 @@ export function ActionForm({ technicianName, findingId, leaderName, onDone }) {
 
         {stepMeta && (
           <div className="doc-required-panel span-2">
+            <p className="doc-required-note doc-required-lead">
+              <strong>Have the conversation with the technician before filling out anything below.</strong>
+            </p>
             {isCoaching ? (
               <>
                 <p className="doc-required-note">
-                  <strong>Complete this before filling out the rest of the form.</strong> Print the{' '}
+                  Print the{' '}
                   <a href={stepMeta.formUrl} target="_blank" rel="noreferrer">
                     {stepMeta.formLabel}
-                  </a>
-                  , have the conversation with the technician, then upload a photo of the completed form below.
+                  </a>{' '}
+                  to use during that conversation, then upload a photo of the completed form below.
                 </p>
                 <label className="doc-upload-label">
                   Photo of completed form
@@ -89,11 +92,11 @@ export function ActionForm({ technicianName, findingId, leaderName, onDone }) {
               </>
             ) : (
               <p className="doc-required-note">
-                <strong>Complete this before filling out the rest of the form.</strong> Open the{' '}
+                Then open the{' '}
                 <a href={stepMeta.formUrl} target="_blank" rel="noreferrer">
                   {stepMeta.formLabel}
                 </a>
-                , fill it out completely, then forward the email confirmation to your manager / senior maintenance
+                , fill it out completely, and forward the email confirmation to your manager / senior maintenance
                 manager.
               </p>
             )}
