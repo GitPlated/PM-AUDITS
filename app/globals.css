@@ -1218,6 +1218,40 @@ details.log-action[open] summary {
   font-size: 1.3rem;
   flex-shrink: 0;
 }
+
+.submit-drop {
+  margin-bottom: 1.25rem;
+}
+.submit-drop summary {
+  cursor: pointer;
+  list-style: none;
+}
+.submit-drop summary::-webkit-details-marker {
+  display: none;
+}
+.submit-drop .submit-cta {
+  background: var(--focus);
+  color: var(--bg-raised);
+}
+.submit-drop .guide-cta-arrow {
+  transition: transform 0.15s ease;
+}
+.submit-drop[open] .guide-cta-arrow {
+  transform: rotate(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .submit-drop .guide-cta-arrow {
+    transition: none;
+  }
+}
+.submit-drop-content {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.4rem 1.5rem;
+  margin-top: 0.75rem;
+}
+
 /* --- Admin page: by-technician drill-down --- */
 
 .tech-track-list {

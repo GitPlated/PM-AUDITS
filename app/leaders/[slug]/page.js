@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getLeaderBySlug, leaderSlug } from '../../../lib/roster'
+import { allTechnicians } from '../../../lib/compliance'
 import { loadComplianceData } from '../../../lib/complianceData'
 import { TeamSection } from '../../../components/TeamSection'
+import { FindingForm } from '../../../components/FindingForm'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,6 +26,7 @@ export default async function LeaderPage({ params }) {
 
   const activeCount = leader.shifts.reduce((n, s) => n + s.techs.filter((t) => !t.vacant).length, 0)
   const vacantCount = leader.shifts.reduce((n, s) => n + s.techs.filter((t) => t.vacant).length, 0)
+  const leaderTechnicians = allTechnicians().filter((t) => t.leaderName === leader.name)
 
   return (
     <div className="wrap" style={accentStyle(leader.color)}>
@@ -74,6 +77,21 @@ export default async function LeaderPage({ params }) {
           →
         </span>
       </Link>
+
+      <details className="submit-drop">
+        <summary className="guide-cta">
+          <span>
+            <span className="guide-cta-title">+ Submit a finding</span>
+            <span className="guide-cta-sub">Log a PM compliance finding for one of {leader.name.split(' ')[0]}&rsquo;s technicians</span>
+          </span>
+          <span className="guide-cta-arrow" aria-hidden="true">
+            ⌄
+          </span>
+        </summary>
+        <div className="submit-drop-content">
+          <FindingForm technicians={leaderTechnicians} />
+        </div>
+      </details>
 
       <section className="panel">
         <h2>Team</h2>

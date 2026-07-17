@@ -44,11 +44,20 @@ export default async function AdminPage() {
         </div>
       </header>
 
-      <section className="panel">
-        <h2>Submit a finding</h2>
-        <p className="panel-sub">Pick any technician — it lands in their responsible leader&rsquo;s queue automatically.</p>
-        <FindingForm technicians={technicians} />
-      </section>
+      <details className="submit-drop">
+        <summary className="guide-cta submit-cta">
+          <span>
+            <span className="guide-cta-title">+ Submit a finding</span>
+            <span className="guide-cta-sub">Log a PM compliance finding for any technician</span>
+          </span>
+          <span className="guide-cta-arrow" aria-hidden="true">
+            ⌄
+          </span>
+        </summary>
+        <div className="submit-drop-content">
+          <FindingForm technicians={technicians} />
+        </div>
+      </details>
 
       {!connected && (
         <div className="notice-panel notice-warn">
