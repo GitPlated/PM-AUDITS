@@ -1,4 +1,4 @@
-# PM-AUDITS
+# PM-AUDITS — Disciplinary Actions Tracker
 
 Disciplinary-action accountability app for IL01 (Aurora, IL). Every technician maps to the
 leader responsible for their PM compliance findings and discipline actions, grouped by shift
@@ -26,16 +26,25 @@ Then open http://localhost:3000.
 - **`/`** — landing page. One card per leader (name, shift badges, team size) with a glowing
   notification badge showing how many of their team's findings are still awaiting a
   discipline action. Click a leader to open their page. Also links to Trends and Submit.
-- **`/leaders/[slug]`** — one leader's page, two areas:
-  - **Team** — findings awaiting action for this leader's people, then the full roster
-    grouped by shift; click any technician to see their finding/action history and log a
-    new discipline action.
-  - **How to apply disciplinary action** — the four-step ladder (with links to the
-    Documented Coaching doc / Progressive Discipline form and the 6-month warning expiry),
-    the handbook's occurrence-count table for skipping steps on egregious violations, and
-    the conversation-wording guide. Identical on every leader's page.
-- **`/trends`** — findings/actions totals across every leader: findings by leader (with how
-  many are still open), and discipline actions by step, site-wide.
+- **`/leaders/[slug]`** — one leader's page:
+  - A large **How to apply disciplinary action** button at the top opens `/guide` (see below).
+  - **Team** — a "Needs action" panel (visually called out — tinted/bordered — whenever it's
+    non-empty) for findings awaiting a discipline action, then the full roster grouped by
+    shift. Click any technician to see their discipline steps laid out left-to-right in the
+    order they happened, their full finding/action history, and log a new action.
+- **`/guide`** — the four-step ladder as icon-led cards with connecting arrows, the handbook's
+  skip-level table, and the wording guide, all in one graphically laid-out page. Optionally
+  takes `?leader=<slug>` (set automatically from a leader's page) so the back link returns to
+  that leader instead of the landing page. Content is identical regardless of which leader
+  linked to it.
+- **`/trends`** — site-wide totals, each with a click-to-expand drill-down of the individual
+  entries:
+  - **Findings by leader** — counts every PM finding *plus* every discipline action logged for
+    that leader's team as one combined total (an action doesn't have to trace back to a
+    logged finding — e.g. a time-theft write-up skips straight to a step with no PM finding
+    behind it), with how many are still open.
+  - **Discipline actions by step** — how many actions have been logged at each step,
+    org-wide; expand a step to see who and when.
 - **`/submit`** — a standalone finding form for any technician; it's saved with that
   technician's leader already attached, so it shows up in the right leader's queue.
 

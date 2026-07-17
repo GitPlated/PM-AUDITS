@@ -22,8 +22,8 @@ export default async function Page() {
     <div className="wrap">
       <header className="top">
         <div className="title-block">
-          <p className="eyebrow">IL01 — Aurora, IL &nbsp;·&nbsp; Disciplinary Accountability</p>
-          <h1>Who owns what</h1>
+          <p className="eyebrow">IL01 — Aurora, IL</p>
+          <h1>Disciplinary Actions Tracker</h1>
           <p className="sub">Pick a leader to see their team and take action, or check trends across everyone.</p>
         </div>
         <div className="stat-row">

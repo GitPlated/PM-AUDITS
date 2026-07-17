@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { currentStepFor } from '../lib/compliance'
 import { StatusPill } from './StatusPill'
+import { StepTrack } from './StepTrack'
 import { Timeline } from './Timeline'
 import { ActionForm } from './ActionForm'
 
@@ -54,6 +55,7 @@ function TechRow({ tech, findings, actions }) {
       </button>
       {open && (
         <div className="tech-row-detail">
+          <StepTrack actions={techActions} />
           <Timeline findings={techFindings} actions={techActions} />
           <details className="log-action">
             <summary>Log a discipline action for {tech.name}</summary>
@@ -69,13 +71,15 @@ export function TeamSection({ leader, findings, actions }) {
   const actionedIds = new Set(actions.map((a) => a.finding_id).filter(Boolean))
   const openFindings = findings.filter((f) => !actionedIds.has(f.id))
 
+  const hasOpen = openFindings.length > 0
+
   return (
     <>
-      <div className="subsection">
+      <div className={`subsection needs-action${hasOpen ? ' needs-action-alert' : ''}`}>
         <h4>
           Needs action <span className="count-badge mono">{openFindings.length}</span>
         </h4>
-        {openFindings.length === 0 ? (
+        {!hasOpen ? (
           <p className="empty-note">Nothing outstanding for this team.</p>
         ) : (
           <ul className="queue">

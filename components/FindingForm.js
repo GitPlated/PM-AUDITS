@@ -55,18 +55,13 @@ export function FindingForm({ technicians, defaultTechnician }) {
         </label>
 
         <label className="span-2">
-          Reason given
+          What did the technician do incorrectly
           <textarea name="reason_given" rows={2} placeholder='e.g. "Not able to execute PM due to machine being in use all day."' />
         </label>
 
         <label>
           Reported by
           <input type="text" name="reported_by" placeholder="Your name" />
-        </label>
-
-        <label className="checkbox-label">
-          <input type="checkbox" name="is_critical_pm" />
-          This is a critical daily PM that cannot be missed
         </label>
 
         <label className="span-2">

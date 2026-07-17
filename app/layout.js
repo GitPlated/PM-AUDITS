@@ -1,9 +1,9 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'Disciplinary Accountability — IL01 Aurora',
+  title: 'Disciplinary Actions Tracker — IL01 Aurora',
   description:
-    'Technician-to-leader accountability roster for disciplinary actions, IL01 Aurora, by shift and role.',
+    'Disciplinary Actions Tracker: technician-to-leader accountability for disciplinary actions, IL01 Aurora.',
 }
 
 export default function RootLayout({ children }) {

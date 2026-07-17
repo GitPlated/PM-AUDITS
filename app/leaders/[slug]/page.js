@@ -1,9 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { getLeaderBySlug } from '../../../lib/roster'
+import { getLeaderBySlug, leaderSlug } from '../../../lib/roster'
 import { loadComplianceData } from '../../../lib/complianceData'
 import { TeamSection } from '../../../components/TeamSection'
-import { DisciplineGuide } from '../../../components/DisciplineGuide'
 
 export const dynamic = 'force-dynamic'
 
@@ -27,12 +26,12 @@ export default async function LeaderPage({ params }) {
   const vacantCount = leader.shifts.reduce((n, s) => n + s.techs.filter((t) => t.vacant).length, 0)
 
   return (
-    <div className="wrap">
+    <div className="wrap" style={accentStyle(leader.color)}>
       <nav className="subnav">
         <Link href="/">← All leaders</Link>
       </nav>
 
-      <header className="top" style={accentStyle(leader.color)}>
+      <header className="top">
         <div className="title-block">
           <p className="eyebrow" style={{ color: 'var(--accent)' }}>
             IL01 — Aurora, IL &nbsp;·&nbsp; Responsible leader
@@ -66,15 +65,20 @@ export default async function LeaderPage({ params }) {
         </div>
       )}
 
+      <Link href={`/guide?leader=${leaderSlug(leader.name)}`} className="guide-cta">
+        <span>
+          <span className="guide-cta-title">How to apply disciplinary action</span>
+          <span className="guide-cta-sub">Steps, forms, the skip-level table, and the wording guide</span>
+        </span>
+        <span className="guide-cta-arrow" aria-hidden="true">
+          →
+        </span>
+      </Link>
+
       <section className="panel">
         <h2>Team</h2>
         <p className="panel-sub">Outstanding findings for this team, then the full roster with discipline status.</p>
         <TeamSection leader={leader} findings={findings} actions={actions} />
-      </section>
-
-      <section className="panel">
-        <h2>How to apply disciplinary action</h2>
-        <DisciplineGuide />
       </section>
     </div>
   )
