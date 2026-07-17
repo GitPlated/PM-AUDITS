@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { ADMIN_COOKIE, COOKIE_MAX_AGE, COOKIE_VALUE } from '../../../lib/auth'
+import { ADMIN_COOKIE, COOKIE_VALUE } from '../../../lib/auth'
 
 export async function POST(request) {
   const formData = await request.formData()
@@ -22,7 +22,7 @@ export async function POST(request) {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
-    maxAge: COOKIE_MAX_AGE,
+    // no maxAge: session cookie, cleared when the browser fully closes
   })
   return response
 }

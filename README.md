@@ -85,11 +85,15 @@ accounts, just a keep-casual-visitors-out gate, consistent with the rest of the 
 no-auth-yet stance:
 
 - **Site password** (`SITE_PASSWORD` env var) — required for the entire app. Unauthenticated
-  visitors land on `/login`; a correct submission sets an httpOnly cookie
-  (`pmaudits_site_ok`, 30 days) and sends them on to wherever they were headed.
+  visitors land on `/login`; a correct submission sets an httpOnly session cookie
+  (`pmaudits_site_ok`) and sends them on to wherever they were headed.
 - **Admin password** (`ADMIN_PASSWORD` env var) — required in addition, only for `/admin` and
   its sub-paths. Same pattern, a separate cookie (`pmaudits_admin_ok`), separate login page
   (`/admin-login`).
+
+Both cookies are session cookies (no `maxAge`) — the browser drops them as soon as it's fully
+closed, so the password is required again on the next visit rather than staying signed in for
+weeks. Normal navigation between pages within the same browser session doesn't re-prompt.
 
 Both env vars are required server-side only (no `NEXT_PUBLIC_` prefix — they're never sent to
 the browser). If either is unset, that gate fails closed: no password submitted will ever
