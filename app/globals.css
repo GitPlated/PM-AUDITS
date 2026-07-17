@@ -806,12 +806,6 @@ button {
   gap: 1rem;
 }
 
-.leader-group {
-  margin-bottom: 1.4rem;
-}
-.leader-group:last-child {
-  margin-bottom: 0;
-}
 .tech-list {
   list-style: none;
   margin: 0;
@@ -1281,6 +1275,58 @@ details.log-action[open] summary {
   flex: 1;
   min-width: 0;
   padding: 0.3rem 0.1rem;
+}
+
+.leader-drop {
+  margin-bottom: 0.9rem;
+}
+.leader-drop:last-child {
+  margin-bottom: 0;
+}
+.leader-drop-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+.leader-drop-name {
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.leader-drop-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.leader-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+.metric {
+  text-align: center;
+}
+.metric-num {
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.metric-lbl {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  margin-top: 0.3rem;
 }
 
 /* --- Password gate --- */

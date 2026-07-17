@@ -91,38 +91,81 @@ export default async function AdminPage() {
       </div>
 
       <section className="panel">
-        <h2>By technician</h2>
+        <h2>By leader</h2>
         <p className="panel-sub">
-          Discipline actions in order, oldest to newest, left to right. Click a technician for the full
-          history, including findings.
+          Click a leader for their high-level numbers and full team. Click a technician within for their
+          history.
         </p>
         {LEADERS.map((leader) => {
           const leaderTechs = technicians.filter((t) => t.leaderName === leader.name)
+          const leaderFindings = findings.filter((f) => f.leader_name === leader.name)
+          const leaderActions = actions.filter((a) => a.leader_name === leader.name)
+          const leaderPending = unactionedFindings(leaderFindings, leaderActions)
+          const stepCounts = DISCIPLINE_STEPS.map((step) => ({
+            key: step.key,
+            label: step.short,
+            count: leaderActions.filter((a) => a.step === step.key).length,
+          }))
+
           return (
-            <div className="leader-group" key={leader.name}>
-              <h3>{leader.name}</h3>
-              <ul className="tech-track-list">
-                {leaderTechs.map((t) => {
-                  const techFindings = findings.filter((f) => f.technician_name === t.name)
-                  const techActions = actions.filter((a) => a.technician_name === t.name)
-                  return (
-                    <details className="drill-row tech-track-row" key={t.name}>
-                      <summary className="tech-track-summary">
-                        <span className="tech-track-name">{t.name}</span>
-                        {techActions.length === 0 ? (
-                          <span className="empty-note">No discipline actions logged.</span>
-                        ) : (
-                          <StepTrack actions={techActions} />
-                        )}
-                      </summary>
-                      <div className="drill-content">
-                        <Timeline findings={techFindings} actions={techActions} />
-                      </div>
-                    </details>
-                  )
-                })}
-              </ul>
-            </div>
+            <details className="drill-row leader-drop" key={leader.name}>
+              <summary className="leader-drop-summary">
+                <span className="leader-drop-name" style={{ color: `var(--${leader.color})` }}>
+                  {leader.name}
+                </span>
+                <span className="leader-drop-meta">
+                  <span className={`pill ${leaderPending.length > 0 ? 'pill-critical' : 'pill-none'}`}>
+                    {leaderPending.length} pending
+                  </span>
+                  <span>{leaderActions.length} actions total</span>
+                </span>
+              </summary>
+              <div className="drill-content">
+                <div className="leader-metrics">
+                  <div className="metric">
+                    <div
+                      className="metric-num mono"
+                      style={leaderPending.length > 0 ? { color: 'var(--alert)' } : undefined}
+                    >
+                      {leaderPending.length}
+                    </div>
+                    <div className="metric-lbl">Pending actions</div>
+                  </div>
+                  <div className="metric">
+                    <div className="metric-num mono">{leaderActions.length}</div>
+                    <div className="metric-lbl">Actions completed</div>
+                  </div>
+                  {stepCounts.map((s) => (
+                    <div className="metric" key={s.key}>
+                      <div className="metric-num mono">{s.count}</div>
+                      <div className="metric-lbl">{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <ul className="tech-track-list">
+                  {leaderTechs.map((t) => {
+                    const techFindings = findings.filter((f) => f.technician_name === t.name)
+                    const techActions = actions.filter((a) => a.technician_name === t.name)
+                    return (
+                      <details className="drill-row tech-track-row" key={t.name}>
+                        <summary className="tech-track-summary">
+                          <span className="tech-track-name">{t.name}</span>
+                          {techActions.length === 0 ? (
+                            <span className="empty-note">No discipline actions logged.</span>
+                          ) : (
+                            <StepTrack actions={techActions} />
+                          )}
+                        </summary>
+                        <div className="drill-content">
+                          <Timeline findings={techFindings} actions={techActions} />
+                        </div>
+                      </details>
+                    )
+                  })}
+                </ul>
+              </div>
+            </details>
           )
         })}
       </section>
