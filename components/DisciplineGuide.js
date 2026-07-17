@@ -4,6 +4,17 @@ import { StepIcon } from './StepIcon'
 export function DisciplineGuide() {
   return (
     <>
+      <section className="panel guide-wording">
+        <StepIcon step="wording" className="guide-wording-icon" />
+        <div>
+          <h2>How to word the conversation</h2>
+          <p className="panel-sub">Guidance on how to phrase these conversations with a technician, before you start:</p>
+          <a className="btn btn-sm" href={WORDING_GUIDE_URL} target="_blank" rel="noreferrer">
+            Open conversation wording guide ↗
+          </a>
+        </div>
+      </section>
+
       <div className="step-flow">
         {DISCIPLINE_STEPS.map((step, i) => (
           <div className="step-flow-item" key={step.key}>
@@ -62,17 +73,6 @@ export function DisciplineGuide() {
           Blank cells mean that step is skipped for that violation type — e.g. Time Theft goes straight to
           termination on the first occurrence.
         </p>
-      </section>
-
-      <section className="panel guide-wording">
-        <StepIcon step="wording" className="guide-wording-icon" />
-        <div>
-          <h2>How to word the conversation</h2>
-          <p className="panel-sub">Guidance on how to phrase these conversations with a technician, before you start:</p>
-          <a className="btn btn-sm" href={WORDING_GUIDE_URL} target="_blank" rel="noreferrer">
-            Open conversation wording guide ↗
-          </a>
-        </div>
       </section>
     </>
   )
