@@ -44,10 +44,14 @@ create index if not exists idx_discipline_actions_finding on discipline_actions 
 alter table pm_findings enable row level security;
 alter table discipline_actions enable row level security;
 
+drop policy if exists "public read findings" on pm_findings;
 create policy "public read findings" on pm_findings for select using (true);
+drop policy if exists "public insert findings" on pm_findings;
 create policy "public insert findings" on pm_findings for insert with check (true);
 
+drop policy if exists "public read actions" on discipline_actions;
 create policy "public read actions" on discipline_actions for select using (true);
+drop policy if exists "public insert actions" on discipline_actions;
 create policy "public insert actions" on discipline_actions for insert with check (true);
 
 -- Added later: photo of the completed Documented Coaching form, uploaded to

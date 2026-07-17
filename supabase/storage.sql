@@ -9,10 +9,12 @@ insert into storage.buckets (id, name, public)
 values ('coaching-forms', 'coaching-forms', true)
 on conflict (id) do nothing;
 
+drop policy if exists "public read coaching forms" on storage.objects;
 create policy "public read coaching forms"
 on storage.objects for select
 using (bucket_id = 'coaching-forms');
 
+drop policy if exists "public upload coaching forms" on storage.objects;
 create policy "public upload coaching forms"
 on storage.objects for insert
 with check (bucket_id = 'coaching-forms');
