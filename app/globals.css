@@ -785,6 +785,14 @@ button {
   text-align: center;
   color: var(--ink-faint);
 }
+.tech-row-summary .step-track {
+  flex: 1;
+  min-width: 0;
+  padding: 0.2rem 0.1rem;
+}
+.tech-row-summary .empty-note {
+  flex: 1;
+}
 .queue-item-detail,
 .tech-row-detail {
   padding: 0.2rem 0.9rem 1rem;
@@ -1210,14 +1218,6 @@ details.log-action[open] summary {
   font-size: 1.3rem;
   flex-shrink: 0;
 }
-.submit-cta {
-  background: var(--focus);
-  color: var(--bg-raised);
-}
-#submit-a-finding {
-  scroll-margin-top: 1.25rem;
-}
-
 /* --- Admin page: by-technician drill-down --- */
 
 .tech-track-list {

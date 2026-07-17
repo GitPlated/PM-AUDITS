@@ -50,12 +50,16 @@ function TechRow({ tech, findings, actions, leaderName }) {
         <span className="tech-row-name">
           {tech.name} <span className="tech-row-role">{tech.role}</span>
         </span>
+        {techActions.length === 0 ? (
+          <span className="empty-note">No discipline actions logged.</span>
+        ) : (
+          <StepTrack actions={techActions} />
+        )}
         <StatusPill action={current} />
         <span className="tech-row-caret">{open ? '−' : '+'}</span>
       </button>
       {open && (
         <div className="tech-row-detail">
-          <StepTrack actions={techActions} />
           <Timeline findings={techFindings} actions={techActions} />
           <details className="log-action">
             <summary>Log disciplinary action for {tech.name}</summary>
