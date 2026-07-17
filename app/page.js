@@ -102,12 +102,19 @@ export default async function Page() {
             </Link>
           )
         })}
-      </div>
 
-      <div className="grid action-grid">
-        <Link href="/admin" className="tile">
-          <h3>Admin</h3>
-          <p>Trends across every leader, submit a finding for any technician, and documented coaching uploads.</p>
+        <Link href="/admin" className="card leader-card-link" style={accentStyle('info')}>
+          <div className="stripe" />
+          <div className="head">
+            <p className="role">Admin</p>
+            <h2>Trends &amp; submissions</h2>
+            <div className="meta">
+              <span className="count">Org-wide tools for every leader</span>
+            </div>
+          </div>
+          <div className="card-footer">
+            <span className="card-cta">Open admin →</span>
+          </div>
         </Link>
       </div>
 

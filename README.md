@@ -25,7 +25,8 @@ Then open http://localhost:3000.
 
 - **`/`** — landing page. One card per leader (name, shift badges, team size) with a glowing
   notification badge showing how many of their team's findings are still awaiting a
-  discipline action. Click a leader to open their page. Also links to Admin.
+  discipline action, plus an Admin card sized the same as the leader cards. Click a leader to
+  open their page.
 - **`/leaders/[slug]`** — one leader's page:
   - A large **How to apply disciplinary action** button at the top opens `/guide` (see below).
   - **Team** — a "Needs action" panel (visually called out — tinted/bordered — whenever it's
@@ -38,13 +39,15 @@ Then open http://localhost:3000.
   takes `?leader=<slug>` (set automatically from a leader's page) so the back link returns to
   that leader instead of the landing page. Content is identical regardless of which leader
   linked to it.
-- **`/admin`** — everything that isn't scoped to one leader:
-  - **Trends** — site-wide totals, each with a click-to-expand drill-down of the individual
-    entries. "Findings by leader" counts every PM finding *plus* every discipline action logged
-    for that leader's team as one combined total (an action doesn't have to trace back to a
-    logged finding — e.g. a time-theft write-up skips straight to a step with no PM finding
-    behind it). "Discipline actions by step" shows how many actions have been logged at each
-    step, org-wide.
+- **`/admin`** — everything that isn't scoped to one leader. Gated by its own separate password
+  (see "Password gate" below). A large **+ Submit a finding** button at the top jumps straight
+  to the submit form further down the same page.
+  - **By technician** — every technician, grouped by leader, name on the left and their
+    discipline actions laid out left-to-right as a row of step blocks on the right (oldest
+    first) — the same step-track used on a leader's page, just for everyone at once. Click a
+    technician to expand the full history, including findings.
+  - **Discipline actions by step** — how many actions have been logged at each step, org-wide,
+    with a click-to-expand list of who and when.
   - **Submit a finding** — a standalone finding form for any technician; it's saved with that
     technician's leader already attached, so it shows up in the right leader's queue.
   - **Documented coaching uploads** — every photo of a completed Documented Coaching form,
@@ -75,6 +78,24 @@ rather than just being a plain form:
    `supabase/storage.sql`) and its public URL is stored on the `discipline_actions` row, which
    is what populates the Admin page's coaching-uploads section.
 
+## Password gate
+
+`middleware.js` gates every request behind two independent, shared passwords — not per-user
+accounts, just a keep-casual-visitors-out gate, consistent with the rest of the app's
+no-auth-yet stance:
+
+- **Site password** (`SITE_PASSWORD` env var) — required for the entire app. Unauthenticated
+  visitors land on `/login`; a correct submission sets an httpOnly cookie
+  (`pmaudits_site_ok`, 30 days) and sends them on to wherever they were headed.
+- **Admin password** (`ADMIN_PASSWORD` env var) — required in addition, only for `/admin` and
+  its sub-paths. Same pattern, a separate cookie (`pmaudits_admin_ok`), separate login page
+  (`/admin-login`).
+
+Both env vars are required server-side only (no `NEXT_PUBLIC_` prefix — they're never sent to
+the browser). If either is unset, that gate fails closed: no password submitted will ever
+match `undefined`, so the app stays locked rather than silently open. Set both in Vercel
+(Production, Preview, Development) alongside the Supabase vars below, then redeploy.
+
 ## Data
 
 - `lib/roster.js` — the static roster (`LEADERS`), shaped to map 1:1 onto future
@@ -104,9 +125,11 @@ rather than just being a plain form:
    Editor.
 2. Copy `.env.example` to `.env.local` and fill in the Project URL and anon/publishable key
    (Project Settings → API in Supabase).
-3. Add the same two env vars in the Vercel project settings (Production, Preview, and
-   Development), then redeploy — `NEXT_PUBLIC_` vars are baked in at build time, so a new
-   deploy is required after adding or changing them.
+3. Add the same two env vars — plus `SITE_PASSWORD` and `ADMIN_PASSWORD` (see "Password gate"
+   above) — in the Vercel project settings (Production, Preview, and Development), then
+   redeploy. `NEXT_PUBLIC_` vars are baked in at build time, so a new deploy is required after
+   adding or changing them; the password vars are read at request time by middleware, but
+   redeploying after adding them is still the simplest way to make sure they've taken effect.
 
 ## Deploying
 

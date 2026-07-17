@@ -3,6 +3,7 @@ import { LEADERS } from '../../lib/roster'
 import { DISCIPLINE_STEPS, allTechnicians } from '../../lib/compliance'
 import { loadComplianceData, unactionedFindings } from '../../lib/complianceData'
 import { Timeline } from '../../components/Timeline'
+import { StepTrack } from '../../components/StepTrack'
 import { FindingForm } from '../../components/FindingForm'
 
 export const dynamic = 'force-dynamic'
@@ -15,14 +16,6 @@ export default async function AdminPage() {
   const { findings, actions, connected } = await loadComplianceData()
   const openFindings = unactionedFindings(findings, actions)
   const criticalCount = findings.filter((f) => f.is_critical_pm).length
-
-  const byLeader = LEADERS.map((leader) => {
-    const lf = findings.filter((f) => f.leader_name === leader.name)
-    const la = actions.filter((a) => a.leader_name === leader.name)
-    const open = unactionedFindings(lf, la)
-    return { name: leader.name, findings: lf, actions: la, total: lf.length + la.length, open: open.length }
-  })
-  const maxByLeader = Math.max(1, ...byLeader.map((l) => l.total))
 
   const byStep = DISCIPLINE_STEPS.map((step) => ({
     key: step.key,
@@ -50,6 +43,16 @@ export default async function AdminPage() {
           <p className="sub">Trends across every leader, a standalone finding intake, and coaching form uploads.</p>
         </div>
       </header>
+
+      <a href="#submit-a-finding" className="guide-cta submit-cta">
+        <span>
+          <span className="guide-cta-title">+ Submit a finding</span>
+          <span className="guide-cta-sub">Log a PM compliance finding for any technician</span>
+        </span>
+        <span className="guide-cta-arrow" aria-hidden="true">
+          ↓
+        </span>
+      </a>
 
       {!connected && (
         <div className="notice-panel notice-warn">
@@ -83,33 +86,40 @@ export default async function AdminPage() {
       </div>
 
       <section className="panel">
-        <h2>Findings by leader</h2>
+        <h2>By technician</h2>
         <p className="panel-sub">
-          Counts every PM finding plus every discipline action logged for that leader&rsquo;s team. Click a
-          leader to see the individual entries.
+          Discipline actions in order, oldest to newest, left to right. Click a technician for the full
+          history, including findings.
         </p>
-        <div className="bar-list">
-          {byLeader.map((l) => (
-            <details className="drill-row" key={l.name}>
-              <summary className="bar-row">
-                <span className="bar-label">{l.name}</span>
-                <div className="bar-track">
-                  <div className="bar-fill" style={{ width: `${(l.total / maxByLeader) * 100}%` }} />
-                </div>
-                <span className="bar-value mono">
-                  {l.total} <span className="bar-sub">({l.open} open)</span>
-                </span>
-              </summary>
-              <div className="drill-content">
-                {l.total === 0 ? (
-                  <p className="empty-note">Nothing logged for this team yet.</p>
-                ) : (
-                  <Timeline findings={l.findings} actions={l.actions} />
-                )}
-              </div>
-            </details>
-          ))}
-        </div>
+        {LEADERS.map((leader) => {
+          const leaderTechs = technicians.filter((t) => t.leaderName === leader.name)
+          return (
+            <div className="leader-group" key={leader.name}>
+              <h3>{leader.name}</h3>
+              <ul className="tech-track-list">
+                {leaderTechs.map((t) => {
+                  const techFindings = findings.filter((f) => f.technician_name === t.name)
+                  const techActions = actions.filter((a) => a.technician_name === t.name)
+                  return (
+                    <details className="drill-row tech-track-row" key={t.name}>
+                      <summary className="tech-track-summary">
+                        <span className="tech-track-name">{t.name}</span>
+                        {techActions.length === 0 ? (
+                          <span className="empty-note">No discipline actions logged.</span>
+                        ) : (
+                          <StepTrack actions={techActions} />
+                        )}
+                      </summary>
+                      <div className="drill-content">
+                        <Timeline findings={techFindings} actions={techActions} />
+                      </div>
+                    </details>
+                  )
+                })}
+              </ul>
+            </div>
+          )
+        })}
       </section>
 
       <section className="panel">
@@ -153,7 +163,7 @@ export default async function AdminPage() {
         </div>
       </section>
 
-      <section className="panel">
+      <section className="panel" id="submit-a-finding">
         <h2>Submit a finding</h2>
         <p className="panel-sub">Pick any technician — it lands in their responsible leader&rsquo;s queue automatically.</p>
         <FindingForm technicians={technicians} />
