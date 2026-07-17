@@ -3,7 +3,7 @@
 import { useRef, useState, useTransition } from 'react'
 import { logFinding } from '../lib/actions'
 
-export function FindingForm({ technicians, defaultTechnician }) {
+export function FindingForm({ technicians, defaultTechnician, leaderName }) {
   const formRef = useRef(null)
   const [pending, startTransition] = useTransition()
   const [message, setMessage] = useState(null)
@@ -59,10 +59,18 @@ export function FindingForm({ technicians, defaultTechnician }) {
           <textarea name="reason_given" rows={2} placeholder='e.g. "Not able to execute PM due to machine being in use all day."' />
         </label>
 
-        <label>
-          Reported by
-          <input type="text" name="reported_by" placeholder="Your name" />
-        </label>
+        {leaderName ? (
+          <div className="signature-field">
+            <span className="signature-label">Reported by</span>
+            <span className="signature-name">{leaderName}</span>
+            <input type="hidden" name="reported_by" value={leaderName} />
+          </div>
+        ) : (
+          <label>
+            Reported by
+            <input type="text" name="reported_by" placeholder="Your name" />
+          </label>
+        )}
 
         <label className="span-2">
           Notes

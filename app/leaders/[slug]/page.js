@@ -5,6 +5,7 @@ import { allTechnicians } from '../../../lib/compliance'
 import { loadComplianceData } from '../../../lib/complianceData'
 import { TeamSection } from '../../../components/TeamSection'
 import { FindingForm } from '../../../components/FindingForm'
+import { StepIcon } from '../../../components/StepIcon'
 
 export const dynamic = 'force-dynamic'
 
@@ -69,9 +70,12 @@ export default async function LeaderPage({ params }) {
       )}
 
       <Link href={`/guide?leader=${leaderSlug(leader.name)}`} className="guide-cta">
-        <span>
-          <span className="guide-cta-title">How to apply disciplinary action</span>
-          <span className="guide-cta-sub">Steps, forms, the skip-level table, and the wording guide</span>
+        <span className="guide-cta-main">
+          <StepIcon step="guide" className="guide-cta-icon" />
+          <span>
+            <span className="guide-cta-title">How to apply disciplinary action</span>
+            <span className="guide-cta-sub">Steps, forms, the skip-level table, and the wording guide</span>
+          </span>
         </span>
         <span className="guide-cta-arrow" aria-hidden="true">
           →
@@ -80,16 +84,19 @@ export default async function LeaderPage({ params }) {
 
       <details className="submit-drop">
         <summary className="guide-cta">
-          <span>
-            <span className="guide-cta-title">+ Submit a finding</span>
-            <span className="guide-cta-sub">Log a PM compliance finding for one of {leader.name.split(' ')[0]}&rsquo;s technicians</span>
+          <span className="guide-cta-main">
+            <StepIcon step="finding" className="guide-cta-icon" />
+            <span>
+              <span className="guide-cta-title">Log a PM compliance finding for a technician</span>
+              <span className="guide-cta-sub">Reported by is signed automatically as {leader.name}</span>
+            </span>
           </span>
           <span className="guide-cta-arrow" aria-hidden="true">
             ⌄
           </span>
         </summary>
         <div className="submit-drop-content">
-          <FindingForm technicians={leaderTechnicians} />
+          <FindingForm technicians={leaderTechnicians} leaderName={leader.name} />
         </div>
       </details>
 

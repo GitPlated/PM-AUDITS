@@ -5,6 +5,7 @@ import { loadComplianceData, unactionedFindings } from '../../lib/complianceData
 import { Timeline } from '../../components/Timeline'
 import { StepTrack } from '../../components/StepTrack'
 import { FindingForm } from '../../components/FindingForm'
+import { StepIcon } from '../../components/StepIcon'
 
 export const dynamic = 'force-dynamic'
 
@@ -46,9 +47,12 @@ export default async function AdminPage() {
 
       <details className="submit-drop">
         <summary className="guide-cta submit-cta">
-          <span>
-            <span className="guide-cta-title">+ Submit a finding</span>
-            <span className="guide-cta-sub">Log a PM compliance finding for any technician</span>
+          <span className="guide-cta-main">
+            <StepIcon step="finding" className="guide-cta-icon" />
+            <span>
+              <span className="guide-cta-title">+ Submit a finding</span>
+              <span className="guide-cta-sub">Log a PM compliance finding for any technician</span>
+            </span>
           </span>
           <span className="guide-cta-arrow" aria-hidden="true">
             ⌄
