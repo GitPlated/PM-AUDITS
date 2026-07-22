@@ -64,3 +64,10 @@ drop policy if exists "public delete findings" on pm_findings;
 create policy "public delete findings" on pm_findings for delete using (true);
 drop policy if exists "public delete actions" on discipline_actions;
 create policy "public delete actions" on discipline_actions for delete using (true);
+
+-- Added later: update policies (only select/insert/delete existed before).
+-- Needed for admin corrections (e.g. fixing reported_by attribution).
+drop policy if exists "public update findings" on pm_findings;
+create policy "public update findings" on pm_findings for update using (true) with check (true);
+drop policy if exists "public update actions" on discipline_actions;
+create policy "public update actions" on discipline_actions for update using (true) with check (true);
