@@ -61,41 +61,43 @@ export default async function AuditorPage({ params }) {
         </div>
       )}
 
-      <details className="submit-drop">
-        <summary className="guide-cta">
-          <span className="guide-cta-main">
-            <StepIcon step="finding" className="guide-cta-icon" />
-            <span>
-              <span className="guide-cta-title">Log a PM compliance finding for a technician</span>
-              <span className="guide-cta-sub">Reported by is signed automatically as {auditor.name}</span>
+      <div className="cta-stack">
+        <details className="submit-drop">
+          <summary className="guide-cta">
+            <span className="guide-cta-main">
+              <StepIcon step="finding" className="guide-cta-icon" />
+              <span>
+                <span className="guide-cta-title">Log a PM compliance finding for a technician</span>
+                <span className="guide-cta-sub">Reported by is signed automatically as {auditor.name}</span>
+              </span>
             </span>
-          </span>
-          <span className="guide-cta-arrow" aria-hidden="true">
-            ⌄
-          </span>
-        </summary>
-        <div className="submit-drop-content">
-          <FindingForm technicians={technicians} leaderName={auditor.name} />
-        </div>
-      </details>
+            <span className="guide-cta-arrow" aria-hidden="true">
+              ⌄
+            </span>
+          </summary>
+          <div className="submit-drop-content">
+            <FindingForm technicians={technicians} leaderName={auditor.name} />
+          </div>
+        </details>
 
-      <details className="submit-drop">
-        <summary className="guide-cta">
-          <span className="guide-cta-main">
-            <StepIcon step="reactive" className="guide-cta-icon" />
-            <span>
-              <span className="guide-cta-title">Log reactive WO compliance finding</span>
-              <span className="guide-cta-sub">Reported by is signed automatically as {auditor.name}</span>
+        <details className="submit-drop">
+          <summary className="guide-cta">
+            <span className="guide-cta-main">
+              <StepIcon step="reactive" className="guide-cta-icon" />
+              <span>
+                <span className="guide-cta-title">Log reactive WO compliance finding</span>
+                <span className="guide-cta-sub">Reported by is signed automatically as {auditor.name}</span>
+              </span>
             </span>
-          </span>
-          <span className="guide-cta-arrow" aria-hidden="true">
-            ⌄
-          </span>
-        </summary>
-        <div className="submit-drop-content">
-          <FindingForm technicians={technicians} leaderName={auditor.name} findingType="reactive_wo" />
-        </div>
-      </details>
+            <span className="guide-cta-arrow" aria-hidden="true">
+              ⌄
+            </span>
+          </summary>
+          <div className="submit-drop-content">
+            <FindingForm technicians={technicians} leaderName={auditor.name} findingType="reactive_wo" />
+          </div>
+        </details>
+      </div>
 
       <section className="panel">
         <h2>Findings by shift</h2>

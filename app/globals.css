@@ -1266,6 +1266,12 @@ details.log-action[open] summary {
 
 /* --- Leader page: guide CTA button --- */
 
+.cta-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
 .guide-cta {
   display: flex;
   align-items: center;
@@ -1276,7 +1282,6 @@ details.log-action[open] summary {
   border-radius: 12px;
   padding: 1.1rem 1.4rem;
   text-decoration: none;
-  margin-bottom: 1.25rem;
 }
 .guide-cta:hover {
   opacity: 0.92;
@@ -1316,7 +1321,7 @@ details.log-action[open] summary {
 }
 
 .submit-drop {
-  margin-bottom: 1.25rem;
+  margin-bottom: 0;
 }
 .submit-drop summary {
   cursor: pointer;
