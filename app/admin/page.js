@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { LEADERS } from '../../lib/roster'
 import { DISCIPLINE_STEPS, allTechnicians } from '../../lib/compliance'
 import { loadComplianceData, unactionedFindings } from '../../lib/complianceData'
+import { countPendingActions } from '../../lib/workweek'
 import { Timeline } from '../../components/Timeline'
 import { StepTrack } from '../../components/StepTrack'
 import { FindingForm } from '../../components/FindingForm'
@@ -30,6 +31,8 @@ export default async function AdminPage() {
     .sort((a, b) => new Date(b.action_date) - new Date(a.action_date))
 
   const technicians = allTechnicians()
+  const techShiftMap = new Map(technicians.map((t) => [t.name, t.shiftCode]))
+  const pendingActionsCount = countPendingActions(openFindings, techShiftMap)
 
   return (
     <div className="wrap">
@@ -79,10 +82,10 @@ export default async function AdminPage() {
           <div className="lbl">Findings logged</div>
         </div>
         <div className="stat-block">
-          <div className="num mono" style={openFindings.length > 0 ? { color: 'var(--alert)' } : undefined}>
-            {openFindings.length}
+          <div className="num mono" style={pendingActionsCount > 0 ? { color: 'var(--alert)' } : undefined}>
+            {pendingActionsCount}
           </div>
-          <div className="lbl">Awaiting action</div>
+          <div className="lbl">Pending actions</div>
         </div>
         <div className="stat-block">
           <div className="num mono">{actions.length}</div>
@@ -104,7 +107,8 @@ export default async function AdminPage() {
           const leaderTechs = technicians.filter((t) => t.leaderName === leader.name)
           const leaderFindings = findings.filter((f) => f.leader_name === leader.name)
           const leaderActions = actions.filter((a) => a.leader_name === leader.name)
-          const leaderPending = unactionedFindings(leaderFindings, leaderActions)
+          const leaderOpenFindings = unactionedFindings(leaderFindings, leaderActions)
+          const leaderPendingCount = countPendingActions(leaderOpenFindings, techShiftMap)
           const stepCounts = DISCIPLINE_STEPS.map((step) => ({
             key: step.key,
             label: step.short,
@@ -131,8 +135,8 @@ export default async function AdminPage() {
                   {leader.name}
                 </span>
                 <span className="leader-drop-meta">
-                  <span className={`pill ${leaderPending.length > 0 ? 'pill-critical' : 'pill-none'}`}>
-                    {leaderPending.length} pending
+                  <span className={`pill ${leaderPendingCount > 0 ? 'pill-critical' : 'pill-none'}`}>
+                    {leaderPendingCount} pending
                   </span>
                   <span>{leaderActions.length} actions total</span>
                 </span>
@@ -142,9 +146,9 @@ export default async function AdminPage() {
                   <div className="metric">
                     <div
                       className="metric-num mono"
-                      style={leaderPending.length > 0 ? { color: 'var(--alert)' } : undefined}
+                      style={leaderPendingCount > 0 ? { color: 'var(--alert)' } : undefined}
                     >
-                      {leaderPending.length}
+                      {leaderPendingCount}
                     </div>
                     <div className="metric-lbl">Pending actions</div>
                   </div>

@@ -1,7 +1,9 @@
 import Link from 'next/link'
 import { LEADERS, getSummary, leaderSlug } from '../lib/roster'
 import { AUDITORS, auditorSlug } from '../lib/auditors'
+import { allTechnicians } from '../lib/compliance'
 import { loadComplianceData, unactionedFindings } from '../lib/complianceData'
+import { countPendingActions } from '../lib/workweek'
 import { NotifyBadge } from '../components/NotifyBadge'
 
 export const dynamic = 'force-dynamic'
@@ -18,6 +20,8 @@ export default async function Page() {
   const summary = getSummary(LEADERS)
   const { findings, actions, connected } = await loadComplianceData()
   const openFindings = unactionedFindings(findings, actions)
+  const techShiftMap = new Map(allTechnicians().map((t) => [t.name, t.shiftCode]))
+  const pendingActionsCount = countPendingActions(openFindings, techShiftMap)
 
   return (
     <div className="wrap">
@@ -43,10 +47,10 @@ export default async function Page() {
             <div className="lbl">Open positions</div>
           </div>
           <div className="stat">
-            <div className="num mono" style={openFindings.length > 0 ? { color: 'var(--alert)' } : undefined}>
-              {openFindings.length}
+            <div className="num mono" style={pendingActionsCount > 0 ? { color: 'var(--alert)' } : undefined}>
+              {pendingActionsCount}
             </div>
-            <div className="lbl">Findings awaiting action</div>
+            <div className="lbl">Pending actions</div>
           </div>
         </div>
       </header>
@@ -71,7 +75,10 @@ export default async function Page() {
             (n, shift) => n + shift.techs.filter((t) => !t.vacant).length,
             0
           )
-          const leaderOpenCount = openFindings.filter((f) => f.leader_name === leader.name).length
+          const leaderOpenCount = countPendingActions(
+            openFindings.filter((f) => f.leader_name === leader.name),
+            techShiftMap
+          )
           return (
             <Link
               href={`/leaders/${leaderSlug(leader.name)}`}

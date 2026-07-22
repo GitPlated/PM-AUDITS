@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { currentStepFor } from '../lib/compliance'
-import { formatWeekRange, workWeekStart } from '../lib/workweek'
+import { formatWeekRange, groupFindingsByWorkWeek } from '../lib/workweek'
 import { StatusPill } from './StatusPill'
 import { StepTrack } from './StepTrack'
 import { Timeline } from './Timeline'
@@ -66,23 +66,6 @@ function FindingBundle({ bundle, leaderName }) {
   )
 }
 
-function groupFindingsByWorkWeek(findings, techShiftMap) {
-  const groups = new Map()
-  for (const f of findings) {
-    const shiftCode = techShiftMap.get(f.technician_name)
-    const weekStart = workWeekStart(shiftCode, f.occurrence_date)
-    const key = `${f.technician_name}__${weekStart}`
-    if (!groups.has(key)) {
-      groups.set(key, { technicianName: f.technician_name, shiftCode, weekStart, findings: [] })
-    }
-    groups.get(key).findings.push(f)
-  }
-  return [...groups.values()].sort((a, b) => {
-    if (a.weekStart !== b.weekStart) return new Date(b.weekStart) - new Date(a.weekStart)
-    return a.technicianName.localeCompare(b.technicianName)
-  })
-}
-
 function TechRow({ tech, findings, actions, leaderName }) {
   const [open, setOpen] = useState(false)
   const current = currentStepFor(tech.name, actions)
@@ -138,7 +121,7 @@ export function TeamSection({ leader, findings, actions }) {
     <>
       <div className={`subsection needs-action${hasOpen ? ' needs-action-alert' : ''}`}>
         <h4>
-          Needs action <span className="count-badge mono">{openFindings.length}</span>
+          Needs action <span className="count-badge mono">{bundles.length}</span>
         </h4>
         {!hasOpen ? (
           <p className="empty-note">Nothing outstanding for this team.</p>
