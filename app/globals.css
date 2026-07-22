@@ -548,6 +548,15 @@ button {
   border-radius: 4px;
   padding: 0.05rem 0.3rem;
 }
+.notice-alert {
+  background: var(--alert-bg);
+  border-color: var(--alert-line);
+  margin-top: 0;
+}
+.notice-alert .mark,
+.notice-alert h3 {
+  color: var(--alert);
+}
 
 .compliance-form {
   display: flex;

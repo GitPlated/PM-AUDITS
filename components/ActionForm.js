@@ -105,6 +105,19 @@ export function ActionForm({ technicianName, findingIds = [], leaderName, onDone
           </div>
         )}
 
+        {step === 'final_written_warning' && (
+          <div className="notice-panel notice-alert span-2">
+            <span className="mark">!</span>
+            <div>
+              <h3>Final Written Warning</h3>
+              <p>
+                If this employee receives another disciplinary action of any kind, they are at risk of
+                termination. Discuss this with your manager before proceeding.
+              </p>
+            </div>
+          </div>
+        )}
+
         <label>
           Action date
           <input type="date" name="action_date" required disabled={!fieldsEnabled} />
