@@ -120,7 +120,6 @@ export default async function Page() {
             style={accentStyle(auditor.color)}
             key={auditor.name}
           >
-            <NotifyBadge count={contestsCount} />
             <div className="stripe" />
             <div className="head">
               <p className="role">Auditor</p>
