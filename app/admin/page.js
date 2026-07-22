@@ -9,6 +9,7 @@ import { StepTrack } from '../../components/StepTrack'
 import { FindingForm } from '../../components/FindingForm'
 import { StepIcon } from '../../components/StepIcon'
 import { ContestReview } from '../../components/ContestReview'
+import { ContestHistoryTable } from '../../components/ContestHistoryTable'
 
 export const dynamic = 'force-dynamic'
 
@@ -20,6 +21,7 @@ export default async function AdminPage() {
   const { findings, actions, contests, connected } = await loadComplianceData()
   const criticalCount = findings.filter((f) => f.is_critical_pm).length
   const contestsPendingCount = pendingContestsCount(contests)
+  const contestsResolvedCount = contests.filter((c) => c.status === 'resolved').length
 
   const byStep = DISCIPLINE_STEPS.map((step) => ({
     key: step.key,
@@ -85,6 +87,26 @@ export default async function AdminPage() {
           </summary>
           <div className="submit-drop-content">
             <FindingForm technicians={technicians} findingType="reactive_wo" />
+          </div>
+        </details>
+
+        <details className="submit-drop">
+          <summary className="guide-cta submit-cta">
+            <span className="guide-cta-main">
+              <StepIcon step="review" className="guide-cta-icon" />
+              <span>
+                <span className="guide-cta-title">Contested findings history</span>
+                <span className="guide-cta-sub">
+                  {contestsResolvedCount} resolved contest{contestsResolvedCount === 1 ? '' : 's'} on record
+                </span>
+              </span>
+            </span>
+            <span className="guide-cta-arrow" aria-hidden="true">
+              ⌄
+            </span>
+          </summary>
+          <div className="submit-drop-content">
+            <ContestHistoryTable contests={contests} />
           </div>
         </details>
       </div>

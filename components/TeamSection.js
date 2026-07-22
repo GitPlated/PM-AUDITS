@@ -9,7 +9,6 @@ import { StepTrack } from './StepTrack'
 import { Timeline } from './Timeline'
 import { ActionForm } from './ActionForm'
 import { ContestForm } from './ContestForm'
-import { ContestLog } from './ContestLog'
 
 function FindingList({ findings }) {
   return (
@@ -175,9 +174,6 @@ export function TeamSection({ leader, findings, actions, contests }) {
   const bundles = groupFindingsByWorkWeek(openFindings, techShiftMap)
   const onHoldBundles = groupFindingsByWorkWeek(onHold, techShiftMap)
 
-  const myResolvedContests = contests.filter((c) => c.leader_name === leader.name && c.status === 'resolved')
-  const newContestCount = myResolvedContests.filter((c) => !c.viewed_at).length
-
   return (
     <>
       <div className={`subsection needs-action${hasOpen ? ' needs-action-alert' : ''}`}>
@@ -209,18 +205,6 @@ export function TeamSection({ leader, findings, actions, contests }) {
               />
             ))}
           </ul>
-        </div>
-      )}
-
-      {myResolvedContests.length > 0 && (
-        <div className="subsection">
-          <h4>
-            Contest outcomes{' '}
-            <span className={`count-badge mono${newContestCount > 0 ? ' count-badge-alert' : ''}`}>
-              {newContestCount > 0 ? `${newContestCount} new` : myResolvedContests.length}
-            </span>
-          </h4>
-          <ContestLog contests={myResolvedContests} findings={findings} />
         </div>
       )}
 

@@ -2,7 +2,6 @@
 
 import { useRef, useState, useTransition } from 'react'
 import { resolveContest } from '../lib/actions'
-import { ContestOutcome } from './ContestOutcome'
 
 function ResolveForm({ contest, findings, reviewerName, onDone }) {
   const formRef = useRef(null)
@@ -162,63 +161,19 @@ function ContestItem({ contest, findingsById, reviewerName }) {
   )
 }
 
-function ResolvedContestItem({ contest, findingsById }) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <li className="queue-item">
-      <button type="button" className="queue-item-summary" onClick={() => setOpen((v) => !v)}>
-        <span className="queue-item-name">{contest.technician_name}</span>
-        <span className="queue-item-task">
-          {contest.finding_ids.length} finding{contest.finding_ids.length === 1 ? '' : 's'} · contested by{' '}
-          {contest.leader_name}
-        </span>
-        <span className="tech-row-caret">{open ? '−' : '+'}</span>
-      </button>
-      {open && (
-        <div className="tech-row-detail">
-          <div className="justification-quote">
-            <p className="justification-label">{contest.leader_name}&rsquo;s justification</p>
-            <p className="justification-text">&ldquo;{contest.justification}&rdquo;</p>
-          </div>
-          <ContestOutcome contest={contest} findingsById={findingsById} />
-        </div>
-      )}
-    </li>
-  )
-}
-
 export function ContestReview({ contests, findings, reviewerName }) {
   const pending = contests.filter((c) => c.status === 'pending')
-  const resolved = contests
-    .filter((c) => c.status === 'resolved')
-    .sort((a, b) => new Date(b.resolved_at) - new Date(a.resolved_at))
   const findingsById = new Map(findings.map((f) => [f.id, f]))
 
-  return (
-    <>
-      {pending.length === 0 ? (
-        <p className="empty-note">No contested findings awaiting review.</p>
-      ) : (
-        <ul className="queue">
-          {pending.map((c) => (
-            <ContestItem key={c.id} contest={c} findingsById={findingsById} reviewerName={reviewerName} />
-          ))}
-        </ul>
-      )}
+  if (pending.length === 0) {
+    return <p className="empty-note">No contested findings awaiting review.</p>
+  }
 
-      {resolved.length > 0 && (
-        <div className="subsection" style={{ marginTop: '1.25rem' }}>
-          <h4>
-            Resolved history <span className="count-badge mono">{resolved.length}</span>
-          </h4>
-          <ul className="queue">
-            {resolved.map((c) => (
-              <ResolvedContestItem key={c.id} contest={c} findingsById={findingsById} />
-            ))}
-          </ul>
-        </div>
-      )}
-    </>
+  return (
+    <ul className="queue">
+      {pending.map((c) => (
+        <ContestItem key={c.id} contest={c} findingsById={findingsById} reviewerName={reviewerName} />
+      ))}
+    </ul>
   )
 }
