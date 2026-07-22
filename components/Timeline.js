@@ -18,7 +18,10 @@ export function Timeline({ findings, actions }) {
           return (
             <li key={`f-${f.id}`} className="timeline-item timeline-finding">
               <div className="timeline-head">
-                <span className="timeline-kind">Finding{f.is_critical_pm ? ' · critical PM' : ''}</span>
+                <span className="timeline-kind">
+                  {f.finding_type === 'reactive_wo' ? 'Reactive WO finding' : 'PM finding'}
+                  {f.is_critical_pm ? ' · critical PM' : ''}
+                </span>
                 <span className="timeline-date mono">{f.occurrence_date}</span>
               </div>
               <p className="timeline-title">{f.pm_task}</p>

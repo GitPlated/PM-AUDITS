@@ -66,6 +66,24 @@ export default async function AdminPage() {
         </div>
       </details>
 
+      <details className="submit-drop">
+        <summary className="guide-cta submit-cta">
+          <span className="guide-cta-main">
+            <StepIcon step="reactive" className="guide-cta-icon" />
+            <span>
+              <span className="guide-cta-title">Log reactive WO compliance finding</span>
+              <span className="guide-cta-sub">For any technician, across every team</span>
+            </span>
+          </span>
+          <span className="guide-cta-arrow" aria-hidden="true">
+            ⌄
+          </span>
+        </summary>
+        <div className="submit-drop-content">
+          <FindingForm technicians={technicians} findingType="reactive_wo" />
+        </div>
+      </details>
+
       {!connected && (
         <div className="notice-panel notice-warn">
           <span className="mark">!</span>

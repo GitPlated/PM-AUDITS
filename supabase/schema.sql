@@ -76,3 +76,9 @@ create policy "public update actions" on discipline_actions for update using (tr
 -- same technician's work week (bundled into a single conversation) instead of
 -- one action per finding. finding_id (singular) stays for old rows.
 alter table discipline_actions add column if not exists finding_ids uuid[];
+
+-- Added later: findings can be logged against a Reactive Work Order, not just
+-- a Planned Maintenance task. Existing rows default to 'pm'.
+alter table pm_findings add column if not exists finding_type text not null default 'pm';
+alter table pm_findings drop constraint if exists pm_findings_finding_type_check;
+alter table pm_findings add constraint pm_findings_finding_type_check check (finding_type in ('pm', 'reactive_wo'));

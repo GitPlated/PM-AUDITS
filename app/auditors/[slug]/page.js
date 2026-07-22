@@ -79,6 +79,24 @@ export default async function AuditorPage({ params }) {
         </div>
       </details>
 
+      <details className="submit-drop">
+        <summary className="guide-cta">
+          <span className="guide-cta-main">
+            <StepIcon step="reactive" className="guide-cta-icon" />
+            <span>
+              <span className="guide-cta-title">Log reactive WO compliance finding</span>
+              <span className="guide-cta-sub">Reported by is signed automatically as {auditor.name}</span>
+            </span>
+          </span>
+          <span className="guide-cta-arrow" aria-hidden="true">
+            ⌄
+          </span>
+        </summary>
+        <div className="submit-drop-content">
+          <FindingForm technicians={technicians} leaderName={auditor.name} findingType="reactive_wo" />
+        </div>
+      </details>
+
       <section className="panel">
         <h2>Findings by shift</h2>
         <p className="panel-sub">Where findings have been concentrated, across every leader&rsquo;s team.</p>

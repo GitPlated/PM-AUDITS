@@ -46,6 +46,9 @@ const PATHS = {
       <path d="M12 12v6M9 15h6" />
     </>
   ),
+  reactive: (
+    <path d="M15.9 6.6a3.5 3.5 0 0 0-4.7 4.5L4.5 17.8l1.7 1.7 6.7-6.7a3.5 3.5 0 0 0 4.5-4.7l-2.3 2.3-2-2 2.3-2.3Z" />
+  ),
 }
 
 export function StepIcon({ step, className }) {
