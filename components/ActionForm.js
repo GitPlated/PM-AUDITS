@@ -8,7 +8,7 @@ function countWords(text) {
   return text.trim().split(/\s+/).filter(Boolean).length
 }
 
-export function ActionForm({ technicianName, findingId, leaderName, onDone }) {
+export function ActionForm({ technicianName, findingIds = [], leaderName, onDone }) {
   const formRef = useRef(null)
   const [pending, startTransition] = useTransition()
   const [message, setMessage] = useState(null)
@@ -48,7 +48,9 @@ export function ActionForm({ technicianName, findingId, leaderName, onDone }) {
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="compliance-form">
       <input type="hidden" name="technician_name" value={technicianName} />
-      {findingId && <input type="hidden" name="finding_id" value={findingId} />}
+      {findingIds.map((id) => (
+        <input key={id} type="hidden" name="finding_ids" value={id} />
+      ))}
       <input type="hidden" name="created_by" value={leaderName ?? ''} />
 
       <div className="form-grid">

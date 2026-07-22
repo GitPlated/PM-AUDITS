@@ -2,40 +2,79 @@
 
 import { useState } from 'react'
 import { currentStepFor } from '../lib/compliance'
+import { formatWeekRange, workWeekStart } from '../lib/workweek'
 import { StatusPill } from './StatusPill'
 import { StepTrack } from './StepTrack'
 import { Timeline } from './Timeline'
 import { ActionForm } from './ActionForm'
 
-function QueueItem({ finding, leaderName }) {
+// All findings for one technician that fall in the same work week are one
+// conversation, not one action per finding — see lib/workweek.js.
+function FindingBundle({ bundle, leaderName }) {
   const [open, setOpen] = useState(false)
+  const { technicianName, shiftCode, weekStart, findings } = bundle
+  const hasCritical = findings.some((f) => f.is_critical_pm)
+  const findingIds = findings.map((f) => f.id)
+
   return (
     <li className="queue-item">
       <button type="button" className="queue-item-summary" onClick={() => setOpen((v) => !v)}>
-        <span className="queue-item-name">{finding.technician_name}</span>
-        <span className="queue-item-task">{finding.pm_task}</span>
-        {finding.is_critical_pm && <span className="pill pill-critical">Critical PM</span>}
-        <span className="queue-item-date mono">{finding.occurrence_date}</span>
+        <span className="queue-item-name">{technicianName}</span>
+        <span className="queue-item-task">
+          {findings.length} finding{findings.length === 1 ? '' : 's'} · {formatWeekRange(shiftCode, weekStart)}
+        </span>
+        {hasCritical && <span className="pill pill-critical">Critical PM</span>}
         <span className="tech-row-caret">{open ? '−' : '+'}</span>
       </button>
       {open && (
         <div className="tech-row-detail">
-          {finding.reason_given && <p className="timeline-detail">&ldquo;{finding.reason_given}&rdquo;</p>}
-          {finding.occurrence_url && (
-            <p className="timeline-meta">
-              <a href={finding.occurrence_url} target="_blank" rel="noreferrer">
-                FMX occurrence ↗
-              </a>
-            </p>
-          )}
+          <ul className="timeline">
+            {findings.map((f) => (
+              <li key={f.id} className="timeline-item timeline-finding">
+                <div className="timeline-head">
+                  <span className="timeline-kind">Finding{f.is_critical_pm ? ' · critical PM' : ''}</span>
+                  <span className="timeline-date mono">{f.occurrence_date}</span>
+                </div>
+                <p className="timeline-title">{f.pm_task}</p>
+                {f.reason_given && <p className="timeline-detail">&ldquo;{f.reason_given}&rdquo;</p>}
+                {f.occurrence_url && (
+                  <div className="timeline-meta">
+                    <a href={f.occurrence_url} target="_blank" rel="noreferrer">
+                      FMX occurrence ↗
+                    </a>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
           <details className="log-action">
-            <summary>Log disciplinary action for {finding.technician_name}</summary>
-            <ActionForm technicianName={finding.technician_name} findingId={finding.id} leaderName={leaderName} />
+            <summary>
+              Log one disciplinary action for {technicianName} ({findings.length} finding
+              {findings.length === 1 ? '' : 's'})
+            </summary>
+            <ActionForm technicianName={technicianName} findingIds={findingIds} leaderName={leaderName} />
           </details>
         </div>
       )}
     </li>
   )
+}
+
+function groupFindingsByWorkWeek(findings, techShiftMap) {
+  const groups = new Map()
+  for (const f of findings) {
+    const shiftCode = techShiftMap.get(f.technician_name)
+    const weekStart = workWeekStart(shiftCode, f.occurrence_date)
+    const key = `${f.technician_name}__${weekStart}`
+    if (!groups.has(key)) {
+      groups.set(key, { technicianName: f.technician_name, shiftCode, weekStart, findings: [] })
+    }
+    groups.get(key).findings.push(f)
+  }
+  return [...groups.values()].sort((a, b) => {
+    if (a.weekStart !== b.weekStart) return new Date(b.weekStart) - new Date(a.weekStart)
+    return a.technicianName.localeCompare(b.technicianName)
+  })
 }
 
 function TechRow({ tech, findings, actions, leaderName }) {
@@ -72,10 +111,22 @@ function TechRow({ tech, findings, actions, leaderName }) {
 }
 
 export function TeamSection({ leader, findings, actions }) {
-  const actionedIds = new Set(actions.map((a) => a.finding_id).filter(Boolean))
+  const actionedIds = new Set()
+  actions.forEach((a) => {
+    if (a.finding_id) actionedIds.add(a.finding_id)
+    if (Array.isArray(a.finding_ids)) a.finding_ids.forEach((id) => actionedIds.add(id))
+  })
   const openFindings = findings.filter((f) => !actionedIds.has(f.id))
 
   const hasOpen = openFindings.length > 0
+
+  const techShiftMap = new Map()
+  leader.shifts.forEach((shift) => {
+    shift.techs.forEach((t) => {
+      if (!t.vacant) techShiftMap.set(t.name, shift.code)
+    })
+  })
+  const bundles = groupFindingsByWorkWeek(openFindings, techShiftMap)
 
   return (
     <>
@@ -87,8 +138,8 @@ export function TeamSection({ leader, findings, actions }) {
           <p className="empty-note">Nothing outstanding for this team.</p>
         ) : (
           <ul className="queue">
-            {openFindings.map((f) => (
-              <QueueItem key={f.id} finding={f} leaderName={leader.name} />
+            {bundles.map((bundle) => (
+              <FindingBundle key={`${bundle.technicianName}__${bundle.weekStart}`} bundle={bundle} leaderName={leader.name} />
             ))}
           </ul>
         )}

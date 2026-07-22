@@ -71,3 +71,8 @@ drop policy if exists "public update findings" on pm_findings;
 create policy "public update findings" on pm_findings for update using (true) with check (true);
 drop policy if exists "public update actions" on discipline_actions;
 create policy "public update actions" on discipline_actions for update using (true) with check (true);
+
+-- Added later: one discipline action can now cover multiple findings from the
+-- same technician's work week (bundled into a single conversation) instead of
+-- one action per finding. finding_id (singular) stays for old rows.
+alter table discipline_actions add column if not exists finding_ids uuid[];
