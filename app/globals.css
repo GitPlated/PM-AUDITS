@@ -912,6 +912,12 @@ button {
   font-size: 0.85rem;
   color: var(--ink-soft);
 }
+.timeline-reporter {
+  color: var(--info);
+}
+.timeline-reporter strong {
+  color: var(--ink);
+}
 .timeline-meta {
   margin-top: 0.3rem;
   display: flex;

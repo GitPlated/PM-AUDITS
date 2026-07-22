@@ -37,6 +37,12 @@ function FindingBundle({ bundle, leaderName }) {
                 </div>
                 <p className="timeline-title">{f.pm_task}</p>
                 {f.reason_given && <p className="timeline-detail">&ldquo;{f.reason_given}&rdquo;</p>}
+                {f.reported_by && (
+                  <p className="timeline-detail timeline-reporter">
+                    Reported by <strong>{f.reported_by}</strong> — reach out to them if you have questions about
+                    this miss.
+                  </p>
+                )}
                 {f.occurrence_url && (
                   <div className="timeline-meta">
                     <a href={f.occurrence_url} target="_blank" rel="noreferrer">
