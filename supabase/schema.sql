@@ -82,3 +82,33 @@ alter table discipline_actions add column if not exists finding_ids uuid[];
 alter table pm_findings add column if not exists finding_type text not null default 'pm';
 alter table pm_findings drop constraint if exists pm_findings_finding_type_check;
 alter table pm_findings add constraint pm_findings_finding_type_check check (finding_type in ('pm', 'reactive_wo'));
+
+-- Added later: a leader can contest one or more findings in a bundle ("tech
+-- not at fault"). This puts every finding sharing that technician's work week
+-- on hold for discipline until Admin or the auditor reviews and resolves it —
+-- confirming some/all findings still stand, dismissing the rest.
+create table if not exists finding_contests (
+  id uuid primary key default gen_random_uuid(),
+  finding_ids uuid[] not null,
+  technician_name text not null,
+  leader_name text not null,
+  justification text not null,
+  status text not null default 'pending' check (status in ('pending', 'resolved')),
+  dismissed_finding_ids uuid[],
+  resolution_notes text,
+  resolved_by text,
+  resolved_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_finding_contests_technician on finding_contests (technician_name);
+create index if not exists idx_finding_contests_status on finding_contests (status);
+
+alter table finding_contests enable row level security;
+
+drop policy if exists "public read contests" on finding_contests;
+create policy "public read contests" on finding_contests for select using (true);
+drop policy if exists "public insert contests" on finding_contests;
+create policy "public insert contests" on finding_contests for insert with check (true);
+drop policy if exists "public update contests" on finding_contests;
+create policy "public update contests" on finding_contests for update using (true) with check (true);

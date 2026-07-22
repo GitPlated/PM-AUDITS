@@ -2,8 +2,9 @@ import Link from 'next/link'
 import { LEADERS, getSummary, leaderSlug } from '../lib/roster'
 import { AUDITORS, auditorSlug } from '../lib/auditors'
 import { allTechnicians } from '../lib/compliance'
-import { loadComplianceData, unactionedFindings } from '../lib/complianceData'
+import { loadComplianceData, openFindingsForAction } from '../lib/complianceData'
 import { countPendingActions } from '../lib/workweek'
+import { pendingContestsCount } from '../lib/contests'
 import { NotifyBadge } from '../components/NotifyBadge'
 
 export const dynamic = 'force-dynamic'
@@ -18,10 +19,11 @@ function accentStyle(color) {
 
 export default async function Page() {
   const summary = getSummary(LEADERS)
-  const { findings, actions, connected } = await loadComplianceData()
-  const openFindings = unactionedFindings(findings, actions)
+  const { findings, actions, contests, connected } = await loadComplianceData()
   const techShiftMap = new Map(allTechnicians().map((t) => [t.name, t.shiftCode]))
+  const openFindings = openFindingsForAction(findings, actions, contests, techShiftMap)
   const pendingActionsCount = countPendingActions(openFindings, techShiftMap)
+  const contestsCount = pendingContestsCount(contests)
 
   return (
     <div className="wrap">
@@ -118,6 +120,7 @@ export default async function Page() {
             style={accentStyle(auditor.color)}
             key={auditor.name}
           >
+            <NotifyBadge count={contestsCount} />
             <div className="stripe" />
             <div className="head">
               <p className="role">Auditor</p>
@@ -133,6 +136,7 @@ export default async function Page() {
         ))}
 
         <Link href="/admin" className="card leader-card-link" style={accentStyle('info')}>
+          <NotifyBadge count={contestsCount} />
           <div className="stripe" />
           <div className="head">
             <p className="role">Admin</p>

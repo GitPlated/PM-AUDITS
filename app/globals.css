@@ -616,6 +616,11 @@ button {
 .checkbox-label input {
   width: auto;
 }
+.contest-finding-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 .form-message {
   font-size: 0.82rem;
   margin: 0;

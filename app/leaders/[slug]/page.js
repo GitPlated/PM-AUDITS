@@ -21,7 +21,7 @@ export default async function LeaderPage({ params }) {
   const leader = getLeaderBySlug(params.slug)
   if (!leader) notFound()
 
-  const { findings: allFindings, actions: allActions, connected } = await loadComplianceData()
+  const { findings: allFindings, actions: allActions, contests, connected } = await loadComplianceData()
   const findings = allFindings.filter((f) => f.leader_name === leader.name)
   const actions = allActions.filter((a) => a.leader_name === leader.name)
 
@@ -123,7 +123,7 @@ export default async function LeaderPage({ params }) {
       <section className="panel">
         <h2>Team</h2>
         <p className="panel-sub">Outstanding findings for this team, then the full roster with discipline status.</p>
-        <TeamSection leader={leader} findings={findings} actions={actions} />
+        <TeamSection leader={leader} findings={findings} actions={actions} contests={contests} />
       </section>
     </div>
   )

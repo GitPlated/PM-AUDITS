@@ -1,12 +1,14 @@
 import Link from 'next/link'
 import { LEADERS } from '../../lib/roster'
 import { DISCIPLINE_STEPS, allTechnicians } from '../../lib/compliance'
-import { loadComplianceData, unactionedFindings } from '../../lib/complianceData'
+import { loadComplianceData, openFindingsForAction } from '../../lib/complianceData'
 import { countPendingActions } from '../../lib/workweek'
+import { pendingContestsCount } from '../../lib/contests'
 import { Timeline } from '../../components/Timeline'
 import { StepTrack } from '../../components/StepTrack'
 import { FindingForm } from '../../components/FindingForm'
 import { StepIcon } from '../../components/StepIcon'
+import { ContestReview } from '../../components/ContestReview'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,9 +17,9 @@ export const metadata = {
 }
 
 export default async function AdminPage() {
-  const { findings, actions, connected } = await loadComplianceData()
-  const openFindings = unactionedFindings(findings, actions)
+  const { findings, actions, contests, connected } = await loadComplianceData()
   const criticalCount = findings.filter((f) => f.is_critical_pm).length
+  const contestsPendingCount = pendingContestsCount(contests)
 
   const byStep = DISCIPLINE_STEPS.map((step) => ({
     key: step.key,
@@ -32,6 +34,7 @@ export default async function AdminPage() {
 
   const technicians = allTechnicians()
   const techShiftMap = new Map(technicians.map((t) => [t.name, t.shiftCode]))
+  const openFindings = openFindingsForAction(findings, actions, contests, techShiftMap)
   const pendingActionsCount = countPendingActions(openFindings, techShiftMap)
 
   return (
@@ -118,6 +121,17 @@ export default async function AdminPage() {
       </div>
 
       <section className="panel">
+        <h2>
+          Contested findings <span className="count-badge mono">{contestsPendingCount}</span>
+        </h2>
+        <p className="panel-sub">
+          A leader flagged the technician as not at fault. Review the justification, dismiss what checks out,
+          and confirm the rest — that reopens them for the leader to action.
+        </p>
+        <ContestReview contests={contests} findings={findings} />
+      </section>
+
+      <section className="panel">
         <h2>By leader</h2>
         <p className="panel-sub">
           Click a leader for their high-level numbers and full team. Click a technician within for their
@@ -127,7 +141,7 @@ export default async function AdminPage() {
           const leaderTechs = technicians.filter((t) => t.leaderName === leader.name)
           const leaderFindings = findings.filter((f) => f.leader_name === leader.name)
           const leaderActions = actions.filter((a) => a.leader_name === leader.name)
-          const leaderOpenFindings = unactionedFindings(leaderFindings, leaderActions)
+          const leaderOpenFindings = openFindingsForAction(leaderFindings, leaderActions, contests, techShiftMap)
           const leaderPendingCount = countPendingActions(leaderOpenFindings, techShiftMap)
           const stepCounts = DISCIPLINE_STEPS.map((step) => ({
             key: step.key,

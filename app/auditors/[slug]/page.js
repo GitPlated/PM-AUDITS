@@ -3,10 +3,12 @@ import { notFound } from 'next/navigation'
 import { getAuditorBySlug } from '../../../lib/auditors'
 import { allTechnicians } from '../../../lib/compliance'
 import { loadComplianceData } from '../../../lib/complianceData'
+import { pendingContestsCount } from '../../../lib/contests'
 import { FindingForm } from '../../../components/FindingForm'
 import { StepIcon } from '../../../components/StepIcon'
 import { ShiftHeatmap } from '../../../components/ShiftHeatmap'
 import { Timeline } from '../../../components/Timeline'
+import { ContestReview } from '../../../components/ContestReview'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,9 +24,10 @@ export default async function AuditorPage({ params }) {
   const auditor = getAuditorBySlug(params.slug)
   if (!auditor) notFound()
 
-  const { findings, actions, connected } = await loadComplianceData()
+  const { findings, actions, contests, connected } = await loadComplianceData()
   const technicians = allTechnicians()
   const techShiftMap = new Map(technicians.map((t) => [t.name, t.shiftCode]))
+  const contestsPendingCount = pendingContestsCount(contests)
 
   const findingsByTech = technicians
     .map((t) => ({
@@ -98,6 +101,17 @@ export default async function AuditorPage({ params }) {
           </div>
         </details>
       </div>
+
+      <section className="panel">
+        <h2>
+          Contested findings <span className="count-badge mono">{contestsPendingCount}</span>
+        </h2>
+        <p className="panel-sub">
+          A leader flagged the technician as not at fault. Review the justification, dismiss what checks out,
+          and confirm the rest — that reopens them for the leader to action.
+        </p>
+        <ContestReview contests={contests} findings={findings} reviewerName={auditor.name} />
+      </section>
 
       <section className="panel">
         <h2>Findings by shift</h2>
