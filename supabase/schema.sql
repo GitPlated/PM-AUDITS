@@ -119,3 +119,7 @@ create policy "public update contests" on finding_contests for update using (tru
 -- for findings sent back for discipline (why the justification didn't hold up).
 alter table finding_contests add column if not exists corrective_action_notes text;
 alter table finding_contests add column if not exists rejection_notes text;
+
+-- Added later: when the leader who raised a contest views its resolution on
+-- their own dashboard, this gets stamped — until then it shows as "new".
+alter table finding_contests add column if not exists viewed_at timestamptz;
