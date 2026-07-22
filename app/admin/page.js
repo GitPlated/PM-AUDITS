@@ -111,6 +111,19 @@ export default async function AdminPage() {
             count: leaderActions.filter((a) => a.step === step.key).length,
           }))
 
+          const findingsByTech = leaderTechs
+            .map((t) => {
+              const techFindings = leaderFindings.filter((f) => f.technician_name === t.name)
+              const byReporter = {}
+              techFindings.forEach((f) => {
+                const key = (f.reported_by || '').trim() || 'Unattributed'
+                byReporter[key] = (byReporter[key] || 0) + 1
+              })
+              return { name: t.name, count: techFindings.length, byReporter }
+            })
+            .sort((a, b) => b.count - a.count)
+          const maxFindingsPerTech = Math.max(1, ...findingsByTech.map((t) => t.count))
+
           return (
             <details className="drill-row leader-drop" key={leader.name}>
               <summary className="leader-drop-summary">
@@ -147,7 +160,49 @@ export default async function AdminPage() {
                   ))}
                 </div>
 
-                <ul className="tech-track-list">
+                <div className="subsection">
+                  <h4>Findings by technician</h4>
+                  <p className="panel-sub">
+                    Raw finding counts per technician, highest first — a quick check that findings aren&rsquo;t
+                    piling up on one person. Click a technician to see who reported each one.
+                  </p>
+                  <div className="bar-list">
+                    {findingsByTech.map((t) => (
+                      <details className="drill-row" key={t.name}>
+                        <summary className="bar-row">
+                          <span className="bar-label">{t.name}</span>
+                          <div className="bar-track">
+                            <div
+                              className="bar-fill"
+                              style={{ width: `${(t.count / maxFindingsPerTech) * 100}%` }}
+                            />
+                          </div>
+                          <span className="bar-value mono">{t.count}</span>
+                        </summary>
+                        <div className="drill-content">
+                          {t.count === 0 ? (
+                            <p className="empty-note">No findings logged.</p>
+                          ) : (
+                            <ul className="reporter-breakdown">
+                              {Object.entries(t.byReporter)
+                                .sort((a, b) => b[1] - a[1])
+                                .map(([reporter, count]) => (
+                                  <li key={reporter}>
+                                    <span>{reporter}</span>
+                                    <span className="mono">{count}</span>
+                                  </li>
+                                ))}
+                            </ul>
+                          )}
+                        </div>
+                      </details>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="subsection">
+                  <h4>Discipline actions by technician</h4>
+                  <ul className="tech-track-list">
                   {leaderTechs.map((t) => {
                     const techFindings = findings.filter((f) => f.technician_name === t.name)
                     const techActions = actions.filter((a) => a.technician_name === t.name)
@@ -167,7 +222,8 @@ export default async function AdminPage() {
                       </details>
                     )
                   })}
-                </ul>
+                  </ul>
+                </div>
               </div>
             </details>
           )
