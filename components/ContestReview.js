@@ -18,6 +18,9 @@ function ResolveForm({ contest, findings, reviewerName, onDone }) {
     })
   }
 
+  const someDismissed = dismissed.size > 0
+  const someRemain = dismissed.size < findings.length
+
   function handleSubmit(e) {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
@@ -28,6 +31,7 @@ function ResolveForm({ contest, findings, reviewerName, onDone }) {
       } else {
         setMessage({ type: 'success', text: 'Resolved.' })
         formRef.current?.reset()
+        setDismissed(new Set())
         onDone?.()
       }
     })
@@ -74,10 +78,29 @@ function ResolveForm({ contest, findings, reviewerName, onDone }) {
           </label>
         )}
 
-        <label className="span-2">
-          Resolution notes
-          <textarea name="resolution_notes" rows={2} required placeholder="What you found and why." />
-        </label>
+        {someDismissed && (
+          <label className="span-2">
+            Corrective action for the dismissed finding{dismissed.size === 1 ? '' : 's'}
+            <textarea
+              name="corrective_action_notes"
+              rows={2}
+              required
+              placeholder='e.g. "Work instructions will be updated and walked through with the team by Friday."'
+            />
+          </label>
+        )}
+
+        {someRemain && (
+          <label className="span-2">
+            Why the justification isn&rsquo;t acceptable for the rest
+            <textarea
+              name="rejection_notes"
+              rows={2}
+              required
+              placeholder="Explain why the finding(s) left unchecked still need discipline."
+            />
+          </label>
+        )}
       </div>
 
       {message && <p className={`form-message ${message.type}`}>{message.text}</p>}
@@ -104,7 +127,10 @@ function ContestItem({ contest, findingsById, reviewerName }) {
       </button>
       {open && (
         <div className="tech-row-detail">
-          <p className="timeline-detail">&ldquo;{contest.justification}&rdquo;</p>
+          <div className="justification-quote">
+            <p className="justification-label">{contest.leader_name}&rsquo;s justification</p>
+            <p className="justification-text">&ldquo;{contest.justification}&rdquo;</p>
+          </div>
           <ul className="timeline">
             {findings.map((f) => (
               <li key={f.id} className="timeline-item timeline-finding">

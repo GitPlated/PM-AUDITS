@@ -75,7 +75,7 @@ export function ContestForm({ technicianName, findings, leaderName, onDone }) {
             name="justification"
             rows={3}
             required
-            placeholder='e.g. "Work instructions were not clear," "Required parts were not available," "Line was down for an unrelated reason and the tech flagged it."'
+            placeholder='e.g. "Work instructions were not clear"'
           />
         </label>
       </div>

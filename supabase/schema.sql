@@ -112,3 +112,10 @@ drop policy if exists "public insert contests" on finding_contests;
 create policy "public insert contests" on finding_contests for insert with check (true);
 drop policy if exists "public update contests" on finding_contests;
 create policy "public update contests" on finding_contests for update using (true) with check (true);
+
+-- Added later: split the one generic resolution_notes into two purpose-built
+-- fields, so it's always clear which kind of note a reviewer left — one for
+-- dismissed findings (what will be done to prevent the mix-up recurring), one
+-- for findings sent back for discipline (why the justification didn't hold up).
+alter table finding_contests add column if not exists corrective_action_notes text;
+alter table finding_contests add column if not exists rejection_notes text;
