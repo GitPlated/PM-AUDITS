@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { LEADERS, getSummary, leaderSlug } from '../lib/roster'
+import { AUDITORS, auditorSlug } from '../lib/auditors'
 import { loadComplianceData, unactionedFindings } from '../lib/complianceData'
 import { NotifyBadge } from '../components/NotifyBadge'
 
@@ -102,6 +103,27 @@ export default async function Page() {
             </Link>
           )
         })}
+
+        {AUDITORS.map((auditor) => (
+          <Link
+            href={`/auditors/${auditorSlug(auditor.name)}`}
+            className="card leader-card-link"
+            style={accentStyle(auditor.color)}
+            key={auditor.name}
+          >
+            <div className="stripe" />
+            <div className="head">
+              <p className="role">Auditor</p>
+              <h2>{auditor.name}</h2>
+              <div className="meta">
+                <span className="count">Findings across every team</span>
+              </div>
+            </div>
+            <div className="card-footer">
+              <span className="card-cta">Open auditor view →</span>
+            </div>
+          </Link>
+        ))}
 
         <Link href="/admin" className="card leader-card-link" style={accentStyle('info')}>
           <div className="stripe" />

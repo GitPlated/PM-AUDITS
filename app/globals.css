@@ -32,6 +32,10 @@
   --alert-bg: #f7e3da;
   --alert-line: #dba488;
 
+  --slate: #56636b;
+  --slate-bg: #e7eaec;
+  --slate-line: #c1c9cd;
+
   --focus: #2f5d92;
 }
 
@@ -69,6 +73,10 @@
     --alert-fg: #1b2226;
     --alert-bg: #3a241a;
     --alert-line: #5c3a28;
+
+    --slate: #b7c0c5;
+    --slate-bg: #262d30;
+    --slate-line: #3d474c;
 
     --focus: #7fb0e8;
   }
@@ -1023,6 +1031,40 @@ details.log-action[open] summary {
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
+}
+
+.shift-heatmap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+.heat-tile {
+  border-radius: 10px;
+  padding: 1rem 0.75rem;
+  text-align: center;
+  border: 1px solid var(--border);
+  transition: background-color 0.2s ease;
+}
+.heat-tile-code {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+.heat-tile-count {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0.2rem 0;
+}
+.heat-tile-label {
+  font-size: 0.68rem;
+  opacity: 0.9;
+}
+@media (max-width: 480px) {
+  .shift-heatmap {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 .reporter-breakdown {
   list-style: none;
