@@ -401,6 +401,9 @@ button {
   padding: 1.25rem 1.4rem 1.5rem;
   margin-bottom: 1.25rem;
 }
+.panel-alert {
+  border-color: var(--alert-line);
+}
 .panel h2 {
   margin: 0 0 0.3rem;
   font-size: 1.05rem;

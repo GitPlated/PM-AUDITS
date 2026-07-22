@@ -59,7 +59,8 @@ function ResolveForm({ contest, findings, reviewerName, onDone }) {
                   onChange={() => toggle(f.id)}
                 />
                 <span>
-                  Dismiss — {f.pm_task} <span className="field-note">({f.occurrence_date})</span>
+                  Dismiss and provide corrective action — {f.pm_task}{' '}
+                  <span className="field-note">({f.occurrence_date})</span>
                 </span>
               </label>
             ))}
@@ -140,6 +141,13 @@ function ContestItem({ contest, findingsById, reviewerName }) {
                 </div>
                 <p className="timeline-title">{f.pm_task}</p>
                 {f.reason_given && <p className="timeline-detail">&ldquo;{f.reason_given}&rdquo;</p>}
+                {f.occurrence_url && (
+                  <div className="timeline-meta">
+                    <a href={f.occurrence_url} target="_blank" rel="noreferrer">
+                      Review {f.finding_type === 'reactive_wo' ? 'reactive WO' : 'PM'} ↗
+                    </a>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

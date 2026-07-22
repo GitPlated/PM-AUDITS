@@ -102,7 +102,7 @@ export default async function AuditorPage({ params }) {
         </details>
       </div>
 
-      <section className="panel">
+      <section className={`panel${contestsPendingCount > 0 ? ' panel-alert' : ''}`}>
         <h2>
           Contested findings <span className="count-badge mono">{contestsPendingCount}</span>
         </h2>

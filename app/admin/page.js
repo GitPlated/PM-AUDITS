@@ -120,7 +120,7 @@ export default async function AdminPage() {
         </div>
       </div>
 
-      <section className="panel">
+      <section className={`panel${contestsPendingCount > 0 ? ' panel-alert' : ''}`}>
         <h2>
           Contested findings <span className="count-badge mono">{contestsPendingCount}</span>
         </h2>
